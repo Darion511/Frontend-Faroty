@@ -1,12 +1,5 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Nexa";
-  src: url("/fonts/Nexa-Light.otf") format("opentype");
-  font-weight: 300;
-  font-style: normal;
-}
-
 /* :root {
   --background: #ffffff;
   --foreground: #171717;

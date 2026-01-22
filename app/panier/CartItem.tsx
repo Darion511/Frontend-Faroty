@@ -29,7 +29,11 @@ export default function CartItem() {
       </div>
 
       {/* SUPPRIMER */}
-      <Trash2 size={18} className="text-red-500 cursor-pointer" />
+
+      <button>
+        {" "}
+        <Trash2 size={18} className="text-red-500 cursor-pointer" />
+      </button>
     </div>
   );
 }
