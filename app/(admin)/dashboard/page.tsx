@@ -1,58 +1,65 @@
-import { Package, ShoppingCart, CreditCard } from "lucide-react";
-import StatCard from "./StatCard";
+"use client";
+
 import Sidebar from "../homeA/navbarA";
-import OrdersChart from "../OrdersChart";
-import CategoryChart from "../CategoryChart";
 import Topbar from "../homeA/Topbar";
+import DashboardHeader from "./DashboardHeader";
+import MessagesPreview from "./MessagesPreview";
+import OrdersPreview from "./OrdersPreview";
+import ProductsPreview from "./ProductsPreview";
+import SalesChart from "./SalesChart";
+import StatsSection from "./StatsSection";
+import { getAllProducts } from "../data/productsData";
+
+import { useState } from "react";
+import { Product } from "../types/product";
+import { products } from "@/app/(users)/components/data/products";
 
 export default function DashboardPage() {
+  const [products, setProducts] = useState<Product[]>([]); // 👈 Initialisation avec []
+  const [loading, setLoading] = useState(true);
+
+  const loadProducts = async () => {
+    try {
+      setLoading(true);
+      const data = await getAllProducts();
+      // 👇 Vérification que data est bien un tableau
+      setProducts(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error(err);
+      setProducts([]); // 👈 En cas d'erreur, mettre un tableau vide
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50">
       {/* SIDEBAR */}
-      <aside className="w-64 bg-white shadow-lg">
-        <Sidebar />
-      </aside>
+      <Sidebar />
 
-      {/* ZONE DROITE */}
-      <div className="flex flex-col flex-1">
+      {/* RIGHT SIDE */}
+      <div className="w-8/10  max-h-screen overflow-auto flex-1">
         {/* TOPBAR */}
-        <header className="h-16 bg-white shadow flex items-center px-6">
-          <Topbar />
-        </header>
+        <Topbar />
 
-        {/* CONTENU PRINCIPAL */}
-        <main className="flex-1 p-6">
-          {/* TITRE */}
-          <h1 className="text-2xl font-bold text-[#8352a5] mb-8">
-            Tableau de bord
-          </h1>
+        {/* MAIN CONTENT */}
+        <main className="p-8 space-y-6 ">
+          {/* HEADER */}
+          <DashboardHeader />
 
-          {/* CARTES STATISTIQUES */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <StatCard
-              title="Produits"
-              value="120"
-              icon={<Package className="text-[#8352a5]" />}
-            />
+          {/* STATISTICS */}
+          <StatsSection />
 
-            <StatCard
-              title="Commandes"
-              value="56"
-              icon={<ShoppingCart className="text-[#8352a5]" />}
-            />
+          {/* SALES CHART */}
+          <SalesChart />
 
-            <StatCard
-              title="Paiements"
-              value="1 250 000 FCFA"
-              icon={<CreditCard className="text-[#8352a5]" />}
-            />
+          {/* PREVIEWS GRID */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <ProductsPreview products={products} />
+            <OrdersPreview />
           </div>
 
-          {/* GRAPHIQUES */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-10">
-            <OrdersChart />
-            <CategoryChart />
-          </div>
+          {/* MESSAGES */}
+          <MessagesPreview />
         </main>
       </div>
     </div>

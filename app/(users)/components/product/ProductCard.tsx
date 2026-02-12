@@ -3,10 +3,16 @@
 import Image from "next/image";
 import Button from "../ui/Button";
 import { motion } from "framer-motion";
-import { Product } from "../data/products";
+import { Product } from "../../types/product"; // ✅ BON TYPE
 import Link from "next/link";
 
 export default function ProductCard({ product }: { product: Product }) {
+  // ✅ Image principale
+  const primaryImage =
+    product.productImages?.find((img) => img.isPrimary)?.imageUrl ||
+    product.productImages?.[0]?.imageUrl ||
+    "/placeholder.png";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -16,13 +22,13 @@ export default function ProductCard({ product }: { product: Product }) {
       className="bg-white rounded-xl shadow hover:shadow-xl transition group cursor-pointer overflow-hidden"
     >
       <Link href={`/produits/${product.id}`}>
-        <div className=" h-44 bg-gray-50 flex items-center justify-center overflow-hidden">
+        <div className="h-44 bg-gray-50 flex items-center justify-center overflow-hidden">
           <Image
-            src={product.image}
+            src={primaryImage}
             alt={product.name}
-            width={140}
-            height={140}
-            className="object-cover w-full group-hover:scale-110 transition duration-300"
+            width={300}
+            height={300}
+            className="object-cover w-full h-full group-hover:scale-110 transition duration-300"
           />
         </div>
       </Link>
@@ -30,11 +36,13 @@ export default function ProductCard({ product }: { product: Product }) {
       {/* CONTENU */}
       <div className="p-4 space-y-2">
         <h3 className="font-semibold text-[#8352a5]">{product.name}</h3>
-        <p className="text-sm text-gray-500">{product.brand}</p>
+
+        {/* Catégorie au lieu de brand */}
+        <p className="text-sm text-gray-500">{product.categoryId?.name}</p>
 
         <div className="flex items-center justify-between pt-2">
           <p className="text-lg font-bold text-gray-900">
-            {product.price} FCFA
+            {product.price.toLocaleString()} FCFA
           </p>
         </div>
       </div>

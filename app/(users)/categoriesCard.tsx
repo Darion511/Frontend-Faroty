@@ -1,16 +1,13 @@
 "use client";
-// import { products } from "./components/data/products";
-import { type Product } from "./components/data/products";
+
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 
-export default function CategoriesCard({ products }: { products: Product }) {
+export default function CategoriesCard({ category }: { category: string }) {
   return (
     <div className="p-4 space-y-2">
-      <Link
-        href={`/produits?category=${encodeURIComponent(products.category)}`}
-      >
+      <Link href={`/produits?category=${encodeURIComponent(category)}`}>
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -30,9 +27,7 @@ export default function CategoriesCard({ products }: { products: Product }) {
 
           {/* TEXTE */}
           <div className="p-4">
-            <h3 className="text-[#8352a5] font-semibold text-lg">
-              {products.category}
-            </h3>
+            <h3 className="text-[#8352a5] font-semibold text-lg">{category}</h3>
             <p className="text-stone-500 text-sm mt-2">
               Cartouches pour toutes marques
             </p>

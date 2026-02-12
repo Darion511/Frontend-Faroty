@@ -4,7 +4,7 @@ import { getTotal } from "../components/lib/cart";
 
 export default function ResumePanier({ lien }: { lien: string }) {
   const total = getTotal();
-  console.log("hi " + total);
+  const isDisabled = total === 0;
   return (
     <div className="bg-white rounded-xl shadow p-6 space-y-4 h-fit">
       <h3 className="font-semibold text-lg text-[#8352a5]">Détail du Panier</h3>
@@ -26,14 +26,24 @@ export default function ResumePanier({ lien }: { lien: string }) {
         <span>{total} FCFA</span>
       </div>
 
-      <Link href={`${lien}`}>
+      {isDisabled ? (
         <button
-          type="submit"
-          className="w-full bg-[#8352a5] text-white py-3 rounded-lg hover:opacity-90"
+          type="button"
+          disabled
+          className="w-full bg-gray-300 text-gray-500 py-3 rounded-lg cursor-not-allowed"
         >
           Commander
         </button>
-      </Link>
+      ) : (
+        <Link href={`${lien}`}>
+          <button
+            type="submit"
+            className="w-full bg-[#8352a5] text-white py-3 cursor-pointer rounded-lg hover:opacity-90"
+          >
+            Commander
+          </button>
+        </Link>
+      )}
     </div>
   );
 }

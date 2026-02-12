@@ -1,5 +1,7 @@
 "use client";
 
+import { RotateCcw } from "lucide-react";
+
 type ButtonReProps = {
   onReset: () => void;
 };
@@ -13,9 +15,14 @@ export default function ButtonRe({ onReset }: ButtonReProps) {
   return (
     <button
       onClick={handleReset}
-      className="flex items-center justify-center border border-gray-300 text-[#8352a5] px-4 py-2 rounded-xl hover:border-purple-600 transition"
+      className="flex items-center justify-center gap-2 bg-white border-2 border-[#8352a5]/30 text-[#8352a5] px-5 py-2.5 rounded-xl hover:bg-[#8352a5] hover:text-white hover:border-[#8352a5] active:scale-95 transition-all duration-200 font-semibold shadow-sm hover:shadow-md group"
+      aria-label="Réinitialiser les filtres"
     >
-      Réinitialiser
+      <RotateCcw
+        size={18}
+        className="group-hover:rotate-180 transition-transform duration-500"
+      />
+      <span>Réinitialiser</span>
     </button>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from "recharts";
-import { productsByBrand } from "../data/productsStats";
+import { productsByBrand } from "../data/productsData";
 
 const COLORS = ["#8352a5", "#b085d6", "#d7c1ec", "#ede4f7"];
 

@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { products } from "@/app/(users)/components/data/products";
+
 import { useState } from "react";
 import ProductCard from "@/app/(users)/components/product/ProductCard";
 import Button from "@/app/(users)/components/ui/Button";
@@ -12,7 +12,7 @@ export default function ProductDetails() {
   // const [qty, setQty] = useState(1);
   const [tab, setTab] = useState("description");
 
-  const product = products.find((p) => p.id === Number(params.id));
+  // Fetch product details based on ID
 
   if (!product) {
     return <p>Produit introuvable</p>;
@@ -115,7 +115,7 @@ export default function ProductDetails() {
 
         {tab === "similaire" && (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {products.map((product) => (
+            {product.map((product) => (
               <div key={product.id} className=" p-4 ">
                 <ProductCard product={product} />
               </div>

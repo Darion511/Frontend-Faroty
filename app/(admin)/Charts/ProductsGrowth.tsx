@@ -8,7 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { productsByMonth } from "../data/productsStats";
+import { productsByMonth } from "../data/productsData";
 
 export default function ProductsGrowth() {
   return (

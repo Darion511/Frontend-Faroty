@@ -1,3 +1,4 @@
+// Sidebar.tsx
 import {
   LayoutDashboard,
   Package,
@@ -5,17 +6,17 @@ import {
   ShoppingCart,
   CreditCard,
   Truck,
-  Settings,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import LogoutButton from "../ui/Button";
+
 export default function Sidebar() {
   return (
-    <aside className="w-64 min-h-screen bg-[#8352a5] text-white flex flex-col">
+    <aside className="h-screen w-2/10 bg-gradient-to-b from-[#8352a5] to-[#6b3d8f] text-white flex flex-col shadow-2xl z-30 hidden md:flex">
       {/* LOGO */}
-      <div className="flex items-center gap-3 px-6 py-6 border-b border-white/20">
-        <div className="w-10 h-10 bg-white text-[#8352a5] rounded-full flex items-center justify-center font-bold">
+      <div className="flex items-center gap-3 px-6 py-6 border-b border-white/10">
+        <div className="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-lg ring-2 ring-white/20">
           <Image
             src="/images.jpg"
             alt="logo"
@@ -24,11 +25,11 @@ export default function Sidebar() {
             className="rounded-full"
           />
         </div>
-        <span className="text-xl font-bold">IFaShop</span>
+        <span className="text-xl font-bold tracking-wide">IFaShop</span>
       </div>
 
       {/* MENU */}
-      <nav className="flex-1 px-4 py-6 space-y-2">
+      <nav className="flex-1 px-4 py-8 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
         <Link href="/dashboard">
           <MenuItem
             icon={<LayoutDashboard size={20} />}
@@ -38,15 +39,22 @@ export default function Sidebar() {
         <Link href="/produitA">
           <MenuItem icon={<Package size={20} />} label="Produits" />
         </Link>
-        <MenuItem icon={<Layers size={20} />} label="Catégories" />
-        <MenuItem icon={<ShoppingCart size={20} />} label="Commandes" />
-        <MenuItem icon={<CreditCard size={20} />} label="Paiements" />
-        <MenuItem icon={<Truck size={20} />} label="Livraisons" />
-        <MenuItem icon={<Settings size={20} />} label="Paramètres" />
+        <Link href="/categorie">
+          <MenuItem icon={<Layers size={20} />} label="Catégories" />
+        </Link>
+        <Link href="/commande">
+          <MenuItem icon={<ShoppingCart size={20} />} label="Commandes" />
+        </Link>
+        <Link href="/paiement">
+          <MenuItem icon={<CreditCard size={20} />} label="Paiements" />
+        </Link>
+        <Link href="/livraison">
+          <MenuItem icon={<Truck size={20} />} label="Livraisons" />
+        </Link>
       </nav>
 
       {/* LOGOUT */}
-      <div className="px-4 py-4 border-t border-white/20">
+      <div className="px-4 py-6 border-t border-white/10">
         <LogoutButton />
       </div>
     </aside>
@@ -56,9 +64,11 @@ export default function Sidebar() {
 /* ITEM REUTILISABLE */
 function MenuItem({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <button className="flex items-center gap-3 w-full px-4 py-2 rounded-lg hover:bg-white/20 transition">
-      {icon}
-      <span>{label}</span>
+    <button className="flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-white/15 transition-all duration-200 hover:translate-x-1 active:scale-95 group">
+      <span className="group-hover:scale-110 transition-transform duration-200">
+        {icon}
+      </span>
+      <span className="font-medium">{label}</span>
     </button>
   );
 }

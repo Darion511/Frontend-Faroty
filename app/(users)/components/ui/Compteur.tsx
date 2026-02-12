@@ -25,7 +25,7 @@ export default function CartButton() {
   }
   return (
     <Link href="/panier">
-      <button className="relative p-2 rounded-full bg-[#8352a5] hover:bg-purple-700 transition">
+      <button className="relative p-2 rounded-full bg-[#8352a5] hover:bg-[#6b428a] cursor-pointer transition">
         <ShoppingCart size={22} className="text-white" />
 
         {cartAmount > 0 && (
