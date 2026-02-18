@@ -1,7 +1,10 @@
 "use client";
 
-import { Product } from "../../types/product";
-import { FiltersState } from "../../types/filters";
+import { useMemo } from "react";
+import { Product } from "../../../types/product";
+import { FiltersState } from "../../../types/filters";
+// import { useEffect, useState } from "react";
+// import { getAllProducts } from "../lib/productService";
 
 interface FiltersProps {
   filters: FiltersState;
@@ -11,8 +14,10 @@ interface FiltersProps {
 
 export default function Filters({ filters, onChange, products }: FiltersProps) {
   // 👇 Utilisation de products (passé en prop) au lieu de product
-  // const categories = Array.from(new Set(products.map((p) => p.category)));
-  // const brands = Array.from(new Set(products.map((p) => p.brand)));
+  const categories = Array.from(
+    new Set(products.map((p) => p.categoryId?.name ?? "Inconnu")),
+  );
+  const brands = Array.from(new Set(products.map((p) => p.marque)));
 
   const toggleCategory = (category: string) => {
     onChange({
@@ -31,6 +36,17 @@ export default function Filters({ filters, onChange, products }: FiltersProps) {
         : [...filters.brands, brand],
     });
   };
+  const { minPrice, maxPrice } = useMemo(() => {
+    if (products.length === 0) {
+      return { minPrice: 0, maxPrice: 0 };
+    }
+
+    const prices = products.map((p) => p.price);
+    return {
+      minPrice: Math.min(...prices),
+      maxPrice: Math.max(...prices),
+    };
+  }, [products]);
 
   return (
     <aside className="w-full lg:w-72 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden lg:sticky top-0 left-0 lg:top-24 h-full">
@@ -42,7 +58,7 @@ export default function Filters({ filters, onChange, products }: FiltersProps) {
         {/* CATEGORIES */}
         <div>
           <h3 className="font-semibold text-[#8352a5] mb-3">Catégories</h3>
-          {/* <div className="space-y-2">
+          <div className="space-y-2">
             {categories.length > 0 ? (
               categories.map((cat) => (
                 <label
@@ -61,13 +77,13 @@ export default function Filters({ filters, onChange, products }: FiltersProps) {
             ) : (
               <p className="text-sm text-gray-500">Aucune catégorie</p>
             )}
-          </div> */}
+          </div>
         </div>
 
         {/* BRANDS */}
         <div>
           <h3 className="font-semibold text-[#8352a5] mb-3">Marques</h3>
-          {/* <div className="space-y-2">
+          <div className="space-y-2">
             {brands.length > 0 ? (
               brands.map((brand) => (
                 <label
@@ -86,7 +102,7 @@ export default function Filters({ filters, onChange, products }: FiltersProps) {
             ) : (
               <p className="text-sm text-gray-500">Aucune marque</p>
             )}
-          </div> */}
+          </div>
         </div>
 
         {/* PRICE RANGE */}
@@ -96,11 +112,15 @@ export default function Filters({ filters, onChange, products }: FiltersProps) {
             <p className="text-lg font-bold text-[#8352a5]">
               {filters.maxPrice.toLocaleString()} FCFA
             </p>
+            <p className="text-xs text-gray-500">
+              Entre {minPrice.toLocaleString()} et {maxPrice.toLocaleString()}{" "}
+              FCFA
+            </p>
             <input
               type="range"
-              min={1000}
-              max={3000}
-              step={100}
+              min={minPrice}
+              max={maxPrice}
+              step={Math.max(1000, Math.floor((maxPrice - minPrice) / 20))}
               value={filters.maxPrice}
               onChange={(e) =>
                 onChange({ ...filters, maxPrice: Number(e.target.value) })
@@ -108,8 +128,8 @@ export default function Filters({ filters, onChange, products }: FiltersProps) {
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#8352a5]"
             />
             <div className="flex justify-between text-xs text-gray-500">
-              <span>1 000 FCFA</span>
-              <span>3 000 FCFA</span>
+              <span>{minPrice}FCFA</span>
+              <span>{maxPrice} FCFA</span>
             </div>
           </div>
         </div>
@@ -120,7 +140,7 @@ export default function Filters({ filters, onChange, products }: FiltersProps) {
             onChange({
               categories: [],
               brands: [],
-              maxPrice: 200000,
+              maxPrice: maxPrice,
             })
           }
           className="w-full py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors"

@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import { Mail, Phone, Package } from "lucide-react";
-import { Order } from "../types/Order";
+import { Order } from "../../types/Order";
 
 type Props = {
   order: Order;

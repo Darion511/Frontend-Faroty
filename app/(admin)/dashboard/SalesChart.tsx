@@ -1,11 +1,32 @@
-export default function SalesChart() {
-  return (
-    <div className="bg-white rounded-xl shadow p-6">
-      <h2 className="font-semibold mb-4">Évolution des ventes</h2>
+"use client";
 
-      <div className="h-56 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg flex items-center justify-center text-gray-500">
-        Graphique ici (Recharts / Chart.js)
-      </div>
+import "@/app/types/chartConfig";
+import { Bar } from "react-chartjs-2";
+import { byPeriod } from "@/app/types/statistics";
+
+export default function SalesChart({ data }: { data: byPeriod[] }) {
+  const chartData = {
+    labels: data.map((p) => p.periodLabel),
+    datasets: [
+      {
+        label: "Commandes",
+        data: data.map((p) => p.orderCount),
+        backgroundColor: "#94a3b8",
+      },
+      {
+        label: "Livrées",
+        data: data.map((p) => p.deliveredCount),
+        backgroundColor: "#22c55e",
+      },
+    ],
+  };
+
+  return (
+    <div className="bg-white p-6 rounded-xl shadow-sm">
+      <h2 className="text-lg font-semibold text-[#8352a5] mb-4">
+        Commandes vs Livrées
+      </h2>
+      <Bar data={chartData} />
     </div>
   );
 }

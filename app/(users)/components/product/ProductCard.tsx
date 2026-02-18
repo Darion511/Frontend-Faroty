@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Button from "../ui/Button";
 import { motion } from "framer-motion";
-import { Product } from "../../types/product"; // ✅ BON TYPE
+import { Product } from "@/app/types/product";
 import Link from "next/link";
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -38,7 +38,7 @@ export default function ProductCard({ product }: { product: Product }) {
         <h3 className="font-semibold text-[#8352a5]">{product.name}</h3>
 
         {/* Catégorie au lieu de brand */}
-        <p className="text-sm text-gray-500">{product.categoryId?.name}</p>
+        <p className="text-sm text-gray-500">{product.marque}</p>
 
         <div className="flex items-center justify-between pt-2">
           <p className="text-lg font-bold text-gray-900">

@@ -2,10 +2,11 @@
 
 import { ShoppingCart } from "lucide-react";
 import { addToCart, getCartAmount } from "../lib/cart";
-import { Product } from "../data/products";
 import { useCartStore } from "../../store/useCartStore";
 import { toast } from "sonner";
-import { getAllProducts } from "../lib/productService";
+
+import { getAllProducts } from "@/app/services/productService";
+import { Product } from "@/app/types/product";
 
 export default function Button({ product }: { product: Product }) {
   const setCartAmount = useCartStore((state) => state.setCartAmount);

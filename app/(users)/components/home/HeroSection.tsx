@@ -1,7 +1,7 @@
 "use client";
 
 import { FaCreditCard, FaTruck, FaClipboardCheck } from "react-icons/fa";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";

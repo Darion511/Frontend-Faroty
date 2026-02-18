@@ -1,40 +1,124 @@
 "use client";
 
-import { X, Package, DollarSign, Layers, CheckCircle } from "lucide-react";
-import { useState } from "react";
+import {
+  X,
+  Package,
+  DollarSign,
+  Layers,
+  CheckCircle,
+  Upload,
+} from "lucide-react";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { createProduct } from "@/app/services/productService";
+import { getAllCategories } from "@/app/services/categoryService";
+import { Category, Product } from "@/app/types/product";
 
 type Props = {
   onClose: () => void;
+  onSuccess: () => void;
 };
 
-export default function AddProductModal({ onClose }: Props) {
+export default function AddProductModal({ onClose, onSuccess }: Props) {
   const [name, setName] = useState("");
   const [price, setPrice] = useState<number | "">("");
   const [stock, setStock] = useState<number | "">("");
-  const [category, setCategory] = useState("");
+  const [brand, setBrand] = useState("");
+  const [categoryId, setCategoryId] = useState<string>("");
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState<"Disponible" | "Indisponible">(
-    "Disponible",
-  );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [imageUrl, setImageUrl] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string>("");
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  // Charger les catégories depuis l'API
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const data = await getAllCategories();
+        setCategories(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Erreur lors du chargement des catégories:", err);
+        setCategories([]);
+      }
+    };
+
+    loadCategories();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Logique de soumission ici
-    console.log({ name, price, stock, category, description, status });
-    onClose();
+    setError("");
+
+    // Validations
+    if (!name.trim()) {
+      setError("Le nom du produit est requis");
+      return;
+    }
+
+    if (!brand.trim()) {
+      setError("La marque du produit est requise");
+      return;
+    }
+
+    if (!imageUrl.trim()) {
+      setError("L'image du produit est requise");
+      return;
+    }
+
+    if (!price || Number(price) <= 0) {
+      setError("Le prix doit être supérieur à 0");
+      return;
+    }
+
+    if (stock === "" || Number(stock) < 0) {
+      setError("La quantité en stock est requise");
+      return;
+    }
+
+    if (!categoryId) {
+      setError("Veuillez sélectionner une catégorie");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Construire l'objet produit selon le type attendu par l'API
+      const newProduct = {
+        name: name.trim(),
+        description: description.trim(),
+        price: Number(price),
+        quantity: Number(stock),
+        marque: brand,
+        imageUrl: imageUrl,
+        categoryId: categoryId,
+      };
+
+      await createProduct(newProduct as any);
+
+      onSuccess();
+      onClose();
+    } catch (err: any) {
+      console.error("Erreur lors de l'ajout du produit:", err);
+      setError(err.message || "Erreur lors de l'ajout du produit");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* OVERLAY avec animation */}
+      {/* OVERLAY */}
       <div
-        className="absolute inset-0 bg-gradient-to-br from-black/60 to-black/40 backdrop-blur-sm animate-fadeIn"
+        className="absolute inset-0 bg-gradient-to-br from-black/60 to-black/40 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* MODAL */}
-      <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden animate-slideUp">
-        {/* HEADER avec gradient */}
+      <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+        {/* HEADER */}
         <div className="bg-gradient-to-r from-[#8352a5] to-[#6b3d8f] px-8 py-6 relative overflow-hidden">
           <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
           <div className="relative flex justify-between items-center">
@@ -65,6 +149,61 @@ export default function AddProductModal({ onClose }: Props) {
           onSubmit={handleSubmit}
           className="p-8 space-y-6 overflow-y-auto max-h-[calc(90vh-180px)]"
         >
+          {/* Message d'erreur */}
+          {error && (
+            <div className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
+              <svg
+                className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <p className="text-red-600 text-sm font-medium">{error}</p>
+            </div>
+          )}
+
+          {/* IMAGE DU PRODUIT */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2">
+              <div className="w-1 h-4 bg-purple-600 rounded-full"></div>
+              Image du produit (URL)
+            </h3>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                URL de l’image
+              </label>
+
+              <input
+                type="url"
+                placeholder="https://example.com/image.jpg"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                className="w-full px-4 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none"
+              />
+            </div>
+
+            {/* Aperçu */}
+            {imageUrl && (
+              <div className="relative w-full max-w-sm">
+                <div className="relative w-full h-64 rounded-xl overflow-hidden border">
+                  <img
+                    src={imageUrl}
+                    alt="Aperçu du produit"
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Informations de base */}
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2">
@@ -92,7 +231,7 @@ export default function AddProductModal({ onClose }: Props) {
               </div>
             </div>
 
-            {/* CATÉGORIE */}
+            {/* CATÉGORIE - Dynamique depuis l'API */}
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
                 Catégorie <span className="text-red-500">*</span>
@@ -102,15 +241,23 @@ export default function AddProductModal({ onClose }: Props) {
                   <Layers className="h-5 w-5 text-gray-400" />
                 </div>
                 <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
+                  value={categoryId}
+                  onChange={(e) => setCategoryId(e.target.value)}
                   required
                   className="w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none hover:border-gray-300 appearance-none bg-white cursor-pointer"
                 >
                   <option value="">Sélectionnez une catégorie</option>
-                  <option value="vetements">Vêtements</option>
-                  <option value="accessoires">Accessoires</option>
-                  <option value="chaussures">Chaussures</option>
+                  {categories.length > 0 ? (
+                    categories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="" disabled>
+                      Aucune catégorie disponible
+                    </option>
+                  )}
                 </select>
                 <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
                   <svg
@@ -204,93 +351,23 @@ export default function AddProductModal({ onClose }: Props) {
             </div>
           </div>
 
-          {/* STATUT */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2">
-              <div className="w-1 h-4 bg-purple-600 rounded-full"></div>
-              Disponibilité
-            </h3>
-
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                type="button"
-                onClick={() => setStatus("Disponible")}
-                className={`relative p-4 rounded-xl border-2 transition-all ${
-                  status === "Disponible"
-                    ? "border-green-500 bg-green-50"
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
-              >
-                {status === "Disponible" && (
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                    <CheckCircle className="w-4 h-4 text-white" />
-                  </div>
-                )}
-                <div className="flex flex-col items-center gap-2">
-                  <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                      status === "Disponible" ? "bg-green-100" : "bg-gray-100"
-                    }`}
-                  >
-                    <CheckCircle
-                      className={`w-6 h-6 ${
-                        status === "Disponible"
-                          ? "text-green-600"
-                          : "text-gray-400"
-                      }`}
-                    />
-                  </div>
-                  <span
-                    className={`font-semibold ${
-                      status === "Disponible"
-                        ? "text-green-700"
-                        : "text-gray-600"
-                    }`}
-                  >
-                    Disponible
-                  </span>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setStatus("Indisponible")}
-                className={`relative p-4 rounded-xl border-2 transition-all ${
-                  status === "Indisponible"
-                    ? "border-red-500 bg-red-50"
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
-              >
-                {status === "Indisponible" && (
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
-                    <CheckCircle className="w-4 h-4 text-white" />
-                  </div>
-                )}
-                <div className="flex flex-col items-center gap-2">
-                  <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                      status === "Indisponible" ? "bg-red-100" : "bg-gray-100"
-                    }`}
-                  >
-                    <X
-                      className={`w-6 h-6 ${
-                        status === "Indisponible"
-                          ? "text-red-600"
-                          : "text-gray-400"
-                      }`}
-                    />
-                  </div>
-                  <span
-                    className={`font-semibold ${
-                      status === "Indisponible"
-                        ? "text-red-700"
-                        : "text-gray-600"
-                    }`}
-                  >
-                    Indisponible
-                  </span>
-                </div>
-              </button>
+          {/* MARQUE */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Marque <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Package className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Ex: HP"
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
+                required
+                className="w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none hover:border-gray-300"
+              />
             </div>
           </div>
         </form>
@@ -304,18 +381,48 @@ export default function AddProductModal({ onClose }: Props) {
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-3 rounded-xl border-2 border-gray-200 text-gray-700 font-semibold hover:bg-gray-100 transition-all"
+              disabled={isLoading}
+              className="px-6 py-3 rounded-xl border-2 border-gray-200 text-gray-700 font-semibold hover:bg-gray-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Annuler
             </button>
 
             <button
               type="submit"
+              form="product-form"
               onClick={handleSubmit}
-              className="px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2"
+              disabled={isLoading}
+              className="px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              <CheckCircle className="w-5 h-5" />
-              Enregistrer
+              {isLoading ? (
+                <>
+                  <svg
+                    className="animate-spin h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  Enregistrement...
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="w-5 h-5" />
+                  Enregistrer
+                </>
+              )}
             </button>
           </div>
         </div>

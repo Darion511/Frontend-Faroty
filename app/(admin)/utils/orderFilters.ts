@@ -1,4 +1,4 @@
-import { Order } from "../types/Order";
+import { Order } from "@/app/types/Order";
 
 export type FilterType = "jour" | "semaine" | "mois";
 

@@ -1,5 +1,6 @@
 // lib/cart.ts
-import { Product } from "../data/products";
+
+import { Product } from "@/app/types/product";
 
 const CART_KEY = "cart";
 
@@ -25,6 +26,7 @@ const CART_KEY = "cart";
 
 export type CartItem = {
   product: Product;
+
   quantity: number;
 };
 
@@ -73,7 +75,7 @@ export function addToCart(product: Product) {
   saveCart(cart);
 }
 
-export function removeFromCart(id: number) {
+export function removeFromCart(id: string) {
   console.log("removing");
   console.log(id);
   const cart = getCart().filter((i) => i.product.id !== id);
@@ -94,13 +96,15 @@ export function getTotal() {
     0,
   );
 }
-export function increaseQty(id: number) {
+export function increaseQty(id: string) {
   const cart = getCart().map((item) =>
-    item.product.id === id ? { ...item, quantity: item.quantity + 1 } : item,
+    item.product.id === id && item.quantity < item.product.quantity
+      ? { ...item, quantity: item.quantity + 1 }
+      : item,
   );
   saveCart(cart);
 }
-export function decreaseQty(id: number) {
+export function decreaseQty(id: string) {
   const cart = getCart().map((item) =>
     item.product.id === id && item.quantity > 1
       ? { ...item, quantity: item.quantity - 1 }

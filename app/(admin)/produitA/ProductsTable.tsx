@@ -1,56 +1,102 @@
 "use client";
 
 import { Package } from "lucide-react";
+import { useState } from "react";
 import ProductTableRow from "./ProductTableRow";
-import { deleteProduct } from "../data/productsData";
-import { Product } from "../types/product";
+import { Product } from "@/app/types/product";
+import { deleteProduct } from "@/app/services/productService";
 
 interface ProductsTableProps {
   products: Product[];
   totalProducts: number;
   onRefresh: () => void;
+  onEdit?: (product: Product) => void;
 }
 
 export default function ProductsTable({
-  products,
-  totalProducts,
+  products = [],
+  totalProducts = 0,
   onRefresh,
+  onEdit,
 }: ProductsTableProps) {
-  const handleDelete = async (id: number) => {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const handleDelete = async (id: string) => {
     const confirmed = window.confirm(
       "Êtes-vous sûr de vouloir supprimer ce produit ?",
     );
 
     if (!confirmed) return;
 
+    setIsDeleting(true);
     try {
       await deleteProduct(id);
       onRefresh();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erreur lors de la suppression:", error);
-      alert("Erreur lors de la suppression du produit. Veuillez réessayer.");
+      alert(
+        error.message ||
+          "Erreur lors de la suppression du produit. Veuillez réessayer.",
+      );
+    } finally {
+      setIsDeleting(false);
     }
   };
 
+  // Calcul de la pagination
+  const totalPages = Math.ceil(totalProducts / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = Math.min(currentPage * itemsPerPage, totalProducts);
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+      onRefresh(); // Recharger les données pour la page précédente
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+      onRefresh(); // Recharger les données pour la page suivante
+    }
+  };
+
+  // État vide
   const EmptyState = () => (
     <tr>
       <td colSpan={6} className="text-center py-16">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center">
-            <Package className="w-10 h-10 text-gray-400" />
+          <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-purple-200 rounded-full flex items-center justify-center">
+            <Package className="w-10 h-10 text-[#8352a5]" />
           </div>
           <div>
             <p className="text-gray-900 font-semibold text-lg mb-1">
               Aucun produit trouvé
             </p>
-            <p className="text-gray-500">
-              Essayez de modifier vos critères de recherche
+            <p className="text-gray-500 text-sm">
+              Essayez de modifier vos critères de recherche ou ajoutez un
+              nouveau produit
             </p>
           </div>
         </div>
       </td>
     </tr>
   );
+
+  // État de chargement pendant la suppression
+  if (isDeleting) {
+    return (
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 p-16">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-[#8352a5] border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-gray-600">Suppression en cours...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
@@ -71,7 +117,7 @@ export default function ProductsTable({
                 Stock
               </th>
               <th className="px-8 py-4 text-left text-sm font-bold text-white uppercase tracking-wider">
-                Statut
+                Marque
               </th>
               <th className="px-8 py-4 text-right text-sm font-bold text-white uppercase tracking-wider">
                 Actions
@@ -80,12 +126,13 @@ export default function ProductsTable({
           </thead>
 
           <tbody className="divide-y divide-gray-100">
-            {products.length > 0 ? (
+            {products && products.length > 0 ? (
               products.map((product) => (
                 <ProductTableRow
                   key={product.id}
                   product={product}
                   onDelete={handleDelete}
+                  onEdit={onEdit}
                 />
               ))
             ) : (
@@ -96,24 +143,36 @@ export default function ProductsTable({
       </div>
 
       {/* PAGINATION */}
-      {products.length > 0 && (
-        <div className="bg-gray-50 px-8 py-4 flex items-center justify-between border-t border-gray-200">
+      {products && products.length > 0 && (
+        <div className="bg-gray-50 px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-200">
           <div className="text-sm text-gray-700">
-            Affichage de <span className="font-semibold">1</span> à{" "}
-            <span className="font-semibold">{products.length}</span> sur{" "}
-            <span className="font-semibold">{totalProducts}</span> produits
+            Affichage de <span className="font-semibold">{startIndex}</span> à{" "}
+            <span className="font-semibold">{endIndex}</span> sur{" "}
+            <span className="font-semibold">{totalProducts}</span> produit
+            {totalProducts > 1 ? "s" : ""}
           </div>
-          <div className="flex gap-2">
+
+          <div className="flex items-center gap-2">
+            {/* Bouton Précédent */}
             <button
-              className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 hover:border-[#8352a5] hover:text-[#8352a5] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-300 disabled:hover:text-gray-700"
               aria-label="Page précédente"
             >
               Précédent
             </button>
+
+            {/* Indicateur de page */}
+            <div className="px-4 py-2 bg-gradient-to-r from-[#8352a5] to-[#6b3d8f] text-white rounded-lg font-semibold">
+              {currentPage} / {totalPages}
+            </div>
+
+            {/* Bouton Suivant */}
             <button
-              className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled
+              onClick={handleNextPage}
+              disabled={currentPage >= totalPages}
+              className="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 hover:border-[#8352a5] hover:text-[#8352a5] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-300 disabled:hover:text-gray-700"
               aria-label="Page suivante"
             >
               Suivant

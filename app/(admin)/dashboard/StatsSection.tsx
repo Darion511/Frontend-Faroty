@@ -1,11 +1,21 @@
 import { Package, ShoppingCart, CreditCard, AlertTriangle } from "lucide-react";
 import StatCard from "../produitA/StatCard";
 
-export default function StatsSection() {
+export default function StatsSection({
+  totalProducts,
+  totalOrders,
+  totalRevenue,
+  lowStockProducts,
+}: {
+  totalProducts: number;
+  totalOrders: number;
+  totalRevenue: number;
+  lowStockProducts: number;
+}) {
   const stats = [
     {
       title: "Produits",
-      value: "120",
+      value: totalProducts,
       icon: Package,
       iconColor: "text-purple-600",
       bgColor: "bg-purple-100",
@@ -14,7 +24,7 @@ export default function StatsSection() {
     },
     {
       title: "Commandes",
-      value: "56",
+      value: totalOrders,
       icon: ShoppingCart,
       iconColor: "text-blue-600",
       bgColor: "bg-blue-100",
@@ -23,7 +33,7 @@ export default function StatsSection() {
     },
     {
       title: "Revenus",
-      value: "1 250 000 FCFA",
+      value: totalRevenue,
       icon: CreditCard,
       iconColor: "text-green-600",
       bgColor: "bg-green-100",
@@ -32,7 +42,7 @@ export default function StatsSection() {
     },
     {
       title: "Rupture de stock",
-      value: "8",
+      value: lowStockProducts,
       icon: AlertTriangle,
       iconColor: "text-red-600",
       bgColor: "bg-red-100",

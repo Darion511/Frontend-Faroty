@@ -14,37 +14,43 @@ import {
   CreditCard,
 } from "lucide-react";
 import { getCart } from "../../(users)/components/lib/cart";
-import { CartItem } from "../../(users)/components/data/products";
+import { CartItem } from "@/app/types/cart";
+import { Order } from "@/app/types/Order";
+import { Payment } from "@/app/types/Order";
 
-interface OrderData {
-  nom: string;
-  prenom: string;
-  phone: string;
-  email: string;
-  ville: string;
-  quartier: string;
-  deliveryType: "home" | "store";
-  deliveryFee: number;
-  subtotal: number;
-  total: number;
-  orderNumber: string;
-  orderDate: string;
-  deliveryAddress: string;
-}
+// interface OrderData {
+//   nom: string;
+//   prenom: string;
+//   phone: string;
+//   email: string;
+//   ville: string;
+//   quartier: string;
+//   deliveryType: "home" | "store";
+//   deliveryFee: number;
+//   subtotal: number;
+//   total: number;
+//   orderNumber: string;
+//   orderDate: string;
+//   deliveryAddress: string;
+// }
 
 export default function PaymentSummary() {
-  const [orderData, setOrderData] = useState<OrderData | null>(null);
+  const [orderData, setOrder] = useState<Order | null>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
-
+  const [deliveryFee, setDeliveryFee] = useState<number>(0);
+  const [paymentData, createPayment] = useState<Payment | null>(null);
   useEffect(() => {
     // Charger les données de commande depuis localStorage
-    const savedOrderData = localStorage.getItem("orderData");
-    if (savedOrderData) {
-      setOrderData(JSON.parse(savedOrderData));
-    }
+    const orders = async () => {
+      const savedOrderData = localStorage.getItem("orderData");
+      if (savedOrderData) {
+        setOrder(JSON.parse(savedOrderData));
+      }
 
-    // Charger le panier
-    setCart(getCart());
+      // Charger le panier
+      setCart(getCart());
+    };
+    orders();
   }, []);
 
   if (!orderData) {
@@ -89,7 +95,7 @@ export default function PaymentSummary() {
             <p className="text-gray-800 text-base mb-2">
               Bonjour{" "}
               <span className="font-semibold">
-                {orderData.prenom} {orderData.nom}
+                {orderData.lastName} {orderData.firstName}
               </span>
               ,
             </p>
@@ -108,7 +114,7 @@ export default function PaymentSummary() {
                   N° commande
                 </p>
                 <p className="text-2xl font-bold text-[#8352a5]">
-                  {orderData.orderNumber}
+                  {orderData.id}
                 </p>
               </div>
 
@@ -119,7 +125,7 @@ export default function PaymentSummary() {
                   Date
                 </p>
                 <p className="text-sm text-gray-800 font-medium">
-                  {orderData.orderDate}
+                  {orderData.createdAt}
                 </p>
               </div>
             </div>
@@ -141,7 +147,7 @@ export default function PaymentSummary() {
                 Mode de livraison
               </p>
               <p className="text-sm text-gray-800 font-medium">
-                {orderData.deliveryType === "home"
+                {orderData.deliveryMethod === "home"
                   ? "Livraison à domicile"
                   : "Retrait en magasin"}
               </p>
@@ -182,7 +188,7 @@ export default function PaymentSummary() {
                     >
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                          {/* <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                             <Image
                               src={item.product.image}
                               alt={item.product.name}
@@ -190,7 +196,7 @@ export default function PaymentSummary() {
                               height={48}
                               className="w-full h-full object-cover"
                             />
-                          </div>
+                          </div> */}
                           <span className="font-medium text-gray-800 text-sm">
                             {item.product.name}
                           </span>
@@ -217,18 +223,21 @@ export default function PaymentSummary() {
               <div className="flex justify-between text-sm text-gray-600">
                 <span>Sous-total</span>
                 <span className="font-medium">
-                  {orderData.subtotal.toLocaleString()} FCFA
+                  {(
+                    orderData.totalAmount - Number(orderData.deliveryPrice)
+                  ).toLocaleString()}{" "}
+                  FCFA
                 </span>
               </div>
               <div className="flex justify-between text-sm text-gray-600">
                 <span>Livraison</span>
                 <span className="font-medium">
-                  {orderData.deliveryFee.toLocaleString()} FCFA
+                  {orderData.deliveryPrice} FCFA
                 </span>
               </div>
               <div className="flex justify-between text-lg font-bold text-[#8352a5] pt-3 border-t border-gray-300">
                 <span>Total</span>
-                <span>{orderData.total.toLocaleString()} FCFA</span>
+                <span>{orderData.totalAmount.toLocaleString()} FCFA</span>
               </div>
             </div>
           </div>
@@ -250,7 +259,7 @@ export default function PaymentSummary() {
                     Nom complet
                   </p>
                   <p className="text-gray-800 font-semibold">
-                    {orderData.prenom} {orderData.nom}
+                    {orderData.lastName} {orderData.firstName}
                   </p>
                 </div>
               </div>
@@ -288,7 +297,7 @@ export default function PaymentSummary() {
                 <div>
                   <p className="text-xs text-gray-500 font-medium">Ville</p>
                   <p className="text-gray-800 font-semibold">
-                    {orderData.ville}
+                    {orderData.deliveryAddress}
                   </p>
                 </div>
               </div>
@@ -299,7 +308,7 @@ export default function PaymentSummary() {
           <div className="pt-4 space-y-4">
             <button className="w-full bg-gradient-to-r from-[#8352a5] to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white py-4 rounded-xl text-lg font-bold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
               <CreditCard className="w-6 h-6" />
-              Payer {orderData.total.toLocaleString()} FCFA
+              Payer {orderData.totalAmount.toLocaleString()} FCFA
             </button>
 
             <div className="bg-green-50 border border-green-200 rounded-xl p-4">

@@ -1,32 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "../homeA/navbarA";
 import Topbar from "../homeA/Topbar";
-import AddProductModal from "./AddProductModal";
-import PageHeader from "./PageHeader";
-import StatsSection from "./StatsSection";
-import SearchBar from "./SearchBar";
 import ProductsTable from "./ProductsTable";
-import { getAllProducts } from "../data/productsData";
-
-// import { fetchProducts } from "../data/productsData";
+import AddProductModal from "./AddProductModal";
+import EditProductModal from "./EditProductModal";
+import PageHeader from "./PageHeader";
+import SearchBar from "./SearchBar";
+import { Product } from "@/app/types/product";
+import { getAllProducts } from "@/app/services/productService";
 
 export default function ProductsPage() {
-  const [search, setSearch] = useState("");
-  const [open, setOpen] = useState(false);
-  const [products, setProducts] = useState<any[]>([]); // 👈 Initialisation avec []
+  const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const loadProducts = async () => {
     try {
       setLoading(true);
       const data = await getAllProducts();
-      // 👇 Vérification que data est bien un tableau
-      setProducts(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error(err);
-      setProducts([]); // 👈 En cas d'erreur, mettre un tableau vide
+      const safeData = Array.isArray(data) ? data : [];
+      setProducts(safeData);
+      setFilteredProducts(safeData);
+    } catch (error) {
+      console.error("Erreur lors du chargement des produits:", error);
+      setProducts([]);
+      setFilteredProducts([]);
     } finally {
       setLoading(false);
     }
@@ -36,70 +41,99 @@ export default function ProductsPage() {
     loadProducts();
   }, []);
 
-  // 🔍 Recherche
-  const filteredProducts = products.filter((product) =>
-    product.name?.toLowerCase().includes(search.toLowerCase()),
-  );
+  // ✅ useEffect corrigé avec setFilteredProducts et dépendances
+  useEffect(() => {
+    let result = [...products];
 
-  // 📊 Statistiques (backend)
-  const totalProducts = products.length;
-  const availableProducts = products.filter(
-    (p) => p.status === "Disponible",
-  ).length;
-  const totalStock = products.reduce((sum, p) => sum + (p.stock ?? 0), 0);
-  const lowStockProducts = products.filter(
-    (p) => p.stock > 0 && p.stock < 5,
-  ).length;
+    if (search.trim()) {
+      result = result.filter((p) =>
+        p.name.toLowerCase().includes(search.toLowerCase()),
+      );
+    }
+
+    if (selectedCategory !== "all") {
+      result = result.filter((p) => p.categoryId?.name === selectedCategory);
+    }
+
+    setFilteredProducts(result); // ✅ Manquait dans l'ancienne version
+  }, [search, selectedCategory, products]); // ✅ Dépendances correctes
+
+  // Ouvrir le modal d'édition
+  const handleEdit = (product: Product) => {
+    setSelectedProduct(product);
+    setShowEditModal(true);
+  };
+
+  // Fermer le modal et rafraîchir
+  const handleEditSuccess = () => {
+    setShowEditModal(false);
+    setSelectedProduct(null);
+    loadProducts();
+  };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Chargement des produits...</p>
+      <div className="flex min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50">
+        <Sidebar />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8352a5] mx-auto mb-4"></div>
+            <p className="text-gray-600 font-medium">
+              Chargement des produits...
+            </p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex bg-gradient-to-br from-purple-50 via-white to-purple-50">
-      {/* SIDEBAR */}
+    <div className="flex min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50">
       <Sidebar />
 
-      {/* RIGHT SIDE */}
       <div className="w-8/10 max-h-screen overflow-auto flex-1">
         <Topbar />
 
         <main className="p-8 space-y-6">
-          {/* HEADER */}
-          <PageHeader onAddClick={() => setOpen(true)} />
+          <PageHeader onAddClick={() => setShowAddModal(true)} />
 
-          {/* STATISTICS */}
-          <StatsSection
-            totalProducts={totalProducts}
-            availableProducts={availableProducts}
-            totalStock={totalStock}
-            lowStockProducts={lowStockProducts}
+          <SearchBar
+            search={search}
+            setSearch={setSearch}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            products={products}
           />
 
-          {/* SEARCH */}
-          <SearchBar search={search} setSearch={setSearch} />
-
-          {/* TABLE */}
           <ProductsTable
             products={filteredProducts}
-            totalProducts={totalProducts}
+            totalProducts={products.length}
             onRefresh={loadProducts}
+            onEdit={handleEdit}
           />
         </main>
       </div>
 
-      {/* MODAL */}
-      {open && (
+      {/* Modal d'ajout */}
+      {showAddModal && (
         <AddProductModal
-          onClose={() => setOpen(false)}
-          onSuccess={loadProducts}
+          onClose={() => setShowAddModal(false)}
+          onSuccess={() => {
+            setShowAddModal(false);
+            loadProducts();
+          }}
+        />
+      )}
+
+      {/* Modal d'édition */}
+      {showEditModal && selectedProduct && (
+        <EditProductModal
+          product={selectedProduct}
+          onClose={() => {
+            setShowEditModal(false);
+            setSelectedProduct(null);
+          }}
+          onSuccess={handleEditSuccess}
         />
       )}
     </div>

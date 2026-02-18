@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { login } from "../service/authService";
+import { login } from "../../services/authService";
 
 export default function LoginPage() {
   const router = useRouter();

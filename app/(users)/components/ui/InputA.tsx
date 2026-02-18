@@ -13,7 +13,7 @@ export default function InputA({ label, value, onChange, error }: InputAProps) {
       <input
         value={value}
         onChange={onChange}
-        className={`border rounded-lg px-3 py-2 outline-none transition
+        className={`border rounded-lg pl-10 px-3 py-2 outline-none transition
           ${
             error
               ? "border-red-500 focus:ring-2 focus:ring-red-300"

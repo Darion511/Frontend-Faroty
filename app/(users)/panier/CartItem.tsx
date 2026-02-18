@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Trash2 } from "lucide-react";
-import { CartItem as Item } from "../types/cart";
+import { CartItem as Item } from "../../types/cart";
 import { useState } from "react";
 
 import {
@@ -30,7 +30,7 @@ export default function CartItem({
       <div className="bg-white rounded-xl shadow p-4 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5 hover:shadow-md transition">
         {/* IMAGE */}
         <Image
-          src={item.product.image}
+          src={item.product.imageUrl}
           alt={item.product.name}
           width={72}
           height={72}
@@ -43,7 +43,9 @@ export default function CartItem({
             {item.product.name}
           </p>
 
-          <p className="text-xs text-gray-400">Marque : {item.product.brand}</p>
+          <p className="text-xs text-gray-400">
+            Marque : {item.product.marque}
+          </p>
 
           <p className="text-sm font-bold text-gray-800">
             {item.product.price} FCFA

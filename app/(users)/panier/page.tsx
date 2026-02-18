@@ -3,7 +3,7 @@
 import CartItem from "./CartItem";
 import ResumePanier from "./ResumePanier";
 import { getCart } from "../components/lib/cart";
-import { CartItem as Item } from "../types/cart";
+import { CartItem as Item } from "../../types/cart";
 import { useState } from "react";
 import SelectAll from "./SelectAll";
 import Link from "next/link";
@@ -16,7 +16,8 @@ export default function PanierPage() {
       <section className="max-w-7xl mt-10 font-nexa font-light mx-auto px-6 py-12">
         <div className="min-h-[50vh] flex flex-col items-center justify-center space-y-4 text-center">
           <p className="text-lg text-gray-700">
-            Votre panier est vide pour le moment. Ajoutez des produits pour commencer vos achats.
+            Votre panier est vide pour le moment. Ajoutez des produits pour
+            commencer vos achats.
           </p>
           <Link href="/produits" className="w-full sm:w-auto">
             <button className="w-full bg-[#8352a5] text-white px-6 py-3 cursor-pointer rounded-lg hover:bg-[#6b428a] transition">

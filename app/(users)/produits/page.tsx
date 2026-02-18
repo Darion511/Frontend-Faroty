@@ -1,14 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Package } from "lucide-react";
+// import { Filter, Package } from "lucide-react";
 
 import ProductCard from "../components/product/ProductCard";
 import Filter from "../components/ui/Filter";
 import Input from "../components/ui/Input";
-import { FiltersState } from "../types/filters";
-import { getAllProducts } from "../components/lib/productService";
-import { Product } from "../types/product";
+import { FiltersState } from "../../types/filters";
+import { useSearchParams } from "next/navigation";
+import { getAllProducts } from "@/app/services/productService";
+import { Product } from "@/app/types/product";
 
 const DEFAULT_FILTERS: FiltersState = {
   categories: [],
@@ -22,6 +23,8 @@ export default function Produits() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const categoryFromUrl = searchParams.get("category");
 
   /* ================= FETCH PRODUCTS ================= */
   useEffect(() => {
@@ -42,6 +45,15 @@ export default function Produits() {
     fetchProducts();
   }, []);
 
+  useEffect(() => {
+    if (categoryFromUrl) {
+      setFilters((prev) => ({
+        ...prev,
+        categories: [categoryFromUrl],
+      }));
+    }
+  }, [categoryFromUrl]);
+
   /* ================= FILTRAGE ================= */
   const filteredProducts = products.filter((product) => {
     const matchSearch = product.name
@@ -50,10 +62,10 @@ export default function Produits() {
 
     const matchCategory =
       filters.categories.length === 0 ||
-      filters.categories.includes(product.category);
+      filters.categories.includes(product.categoryId?.name ?? "Inconnu");
 
     const matchBrand =
-      filters.brands.length === 0 || filters.brands.includes(product.brand);
+      filters.brands.length === 0 || filters.brands.includes(product.marque);
 
     const matchPrice = product.price <= filters.maxPrice;
 
@@ -121,7 +133,11 @@ export default function Produits() {
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
           {/* ===== SIDEBAR FILTERS ===== */}
           <aside className="w-full lg:w-72 lg:sticky lg:top-24 lg:self-start">
-            <Filter filters={filters} onChange={setFilters} />
+            <Filter
+              filters={filters}
+              products={products}
+              onChange={setFilters}
+            />
           </aside>
 
           {/* ===== MAIN CONTENT ===== */}
@@ -155,9 +171,9 @@ export default function Produits() {
             ) : (
               /* EMPTY STATE */
               <div className="bg-white rounded-xl shadow-sm p-12 text-center">
-                <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+                {/* <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
                   <Package className="w-12 h-12 text-gray-400" />
-                </div>
+                </div> */}
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">
                   Aucun produit trouvé
                 </h3>

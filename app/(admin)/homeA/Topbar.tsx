@@ -22,7 +22,7 @@ export default function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
 
       <div className="flex items-center gap-2 sm:gap-3">
         {/* NOTIFICATIONS */}
-        <button className="relative p-2 rounded-lg border border-[#8352a5]/20 hover:bg-[#8352a5]/5 transition-all duration-200 active:scale-95 group">
+        {/* <button className="relative p-2 rounded-lg border border-[#8352a5]/20 hover:bg-[#8352a5]/5 transition-all duration-200 active:scale-95 group">
           <Bell
             className="text-[#8352a5] group-hover:scale-110 transition-transform duration-200"
             size={20}
@@ -32,13 +32,13 @@ export default function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
           </span>
         </button>
 
-        {/* SETTINGS */}
+       
         <button className="p-2 rounded-lg border border-[#8352a5]/20 hover:bg-[#8352a5]/5 transition-all duration-200 active:scale-95 group">
           <Settings
             className="text-[#8352a5] group-hover:rotate-90 transition-transform duration-300"
             size={20}
           />
-        </button>
+        </button> */}
 
         {/* USER PROFILE */}
         <div className="hidden sm:flex items-center gap-2 ml-2 pl-3 border-l border-gray-200">

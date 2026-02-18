@@ -12,8 +12,8 @@ import ButtonRe from "../ui/ButtonRe";
 import SelectCa from "../ui/SelectCa";
 import SelectBrand from "../ui/SelectBrand";
 
-import { Product } from "../../types/product";
-import { getAllProducts } from "../lib/productService";
+import { getAllProducts } from "@/app/services/productService";
+import { Product } from "@/app/types/product";
 
 export default function Features() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -23,21 +23,27 @@ export default function Features() {
 
   /* ================= FETCH PRODUCTS ================= */
   useEffect(() => {
-    setIsLoading(true);
-    getAllProducts()
-      .then(setProducts)
-      .catch((err) => console.error("Erreur produits:", err))
-      .finally(() => setIsLoading(false));
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      getAllProducts()
+        .then(setProducts)
+        .catch((err) => console.error("Erreur produits:", err))
+        .finally(() => setIsLoading(false));
+    };
+    fetchProducts();
   }, []);
 
   /* ================= OPTIONS ================= */
   const categories = useMemo(
-    () => Array.from(new Set(products.map((p) => p.category))).filter(Boolean),
+    () =>
+      Array.from(
+        new Set(products.map((p) => p.categoryId?.name ?? "Inconnu")),
+      ).filter(Boolean),
     [products],
   );
 
   const brands = useMemo(
-    () => Array.from(new Set(products.map((p) => p.brand))).filter(Boolean),
+    () => Array.from(new Set(products.map((p) => p.marque))).filter(Boolean),
     [products],
   );
 
@@ -45,8 +51,8 @@ export default function Features() {
   const filteredProducts = useMemo(() => {
     return products.filter(
       (p) =>
-        (category ? p.category === category : true) &&
-        (brand ? p.brand === brand : true),
+        (category ? p.categoryId?.name === category : true) &&
+        (brand ? p.marque === brand : true),
     );
   }, [products, category, brand]);
 
@@ -76,7 +82,7 @@ export default function Features() {
             <SelectBrand brands={brands} onChange={setBrand} />
           </div>
 
-          <ButtonRe onReset={handleReset} />
+          {/* <ButtonRe onReset={handleReset} /> */}
         </div>
 
         {/* ===== CONTENT ===== */}
