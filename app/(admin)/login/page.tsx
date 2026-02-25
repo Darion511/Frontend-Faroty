@@ -70,7 +70,7 @@ export default function LoginPage() {
           )}
 
           {/* FORMULAIRE */}
-          <form onSubmit={handleLogin} className="space-y-5">
+          <form onSubmit={handleLogin} autoComplete="off" className="space-y-5">
             {/* EMAIL */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -83,6 +83,7 @@ export default function LoginPage() {
                 />
                 <input
                   type="email"
+                  autoComplete=" "
                   placeholder="votre@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -104,6 +105,7 @@ export default function LoginPage() {
                 />
                 <input
                   type={showPassword ? "text" : "password"}
+                  autoComplete=" "
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

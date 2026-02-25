@@ -90,7 +90,7 @@ export default function ProductsPreview() {
     return {
       totalSold: topProducts.reduce((sum, p) => sum + (p.price || 0), 0),
       stockValue: topProducts.reduce(
-        (sum, p) => sum + p.price * (p.quantity || 0),
+        (sum, p) => sum + p.price * (p.quantity - p.pending || 0),
         0,
       ),
     };
@@ -146,11 +146,10 @@ export default function ProductsPreview() {
       {topProducts.length > 0 ? (
         <div className="space-y-4">
           {topProducts.map((product, index) => {
-            const stockStatus = getStockStatus(product.quantity || 0);
-            const primaryImage =
-              product.productImages?.find((p) => p.isPrimary)?.imageUrl ||
-              product.productImages?.[0]?.imageUrl ||
-              "/placeholder-product.png";
+            const stockStatus = getStockStatus(
+              product.quantity - product.pending || 0,
+            );
+            const primaryImage = product.imageUrl;
 
             return (
               <div
@@ -166,7 +165,7 @@ export default function ProductsPreview() {
 
                 {/* Image */}
                 <div className="w-14 h-14 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-200">
-                  <Image
+                  <img
                     src={primaryImage}
                     alt={product.name}
                     width={56}
@@ -195,7 +194,7 @@ export default function ProductsPreview() {
                       <AlertCircle className={`w-3 h-3 ${stockStatus.color}`} />
                     )}
                     <span className={`text-xs font-bold ${stockStatus.color}`}>
-                      {product.quantity || 0}
+                      {product.quantity - product.pending || 0}
                     </span>
                   </div>
                   <span className="text-[10px] uppercase tracking-wider text-gray-400 font-medium">

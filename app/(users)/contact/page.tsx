@@ -1,14 +1,16 @@
 "use client";
 
+import { CreateMessage } from "@/app/services/messageService";
 import { Phone, MapPin, Mail, Send } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 
 export default function ContactSection() {
+  const [error, setError] = useState<string>("");
   const [formData, setFormData] = useState({
     name: "",
-    contact: "",
-    message: "",
+    email: "",
+    content: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -16,12 +18,34 @@ export default function ContactSection() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulation d'envoi
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    if (!formData.name.trim()) {
+      setError("Le nom  est requis");
+      return;
+    }
+    if (!formData.email.trim()) {
+      setError("Le email est requis");
+      return;
+    }
+    if (!formData.content.trim()) {
+      setError("Le conent  est requis");
+      return;
+    }
 
-    alert("Message envoyé avec succès !");
-    setFormData({ name: "", contact: "", message: "" });
-    setIsSubmitting(false);
+    try {
+      const newMessage = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        content: formData.content.trim(),
+      };
+      await CreateMessage(newMessage);
+
+      alert("Message envoyé avec succès !");
+      setFormData({ name: "", email: "", content: "" });
+    } catch (error: any) {
+      alert(error.message || "Erreur lors de l’envoi du message");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (
@@ -151,7 +175,6 @@ export default function ContactSection() {
               </label>
               <input
                 type="text"
-                id="name"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
@@ -170,10 +193,9 @@ export default function ContactSection() {
                 Email ou Téléphone
               </label>
               <input
-                type="text"
-                id="contact"
-                name="contact"
-                value={formData.contact}
+                type="email"
+                name="email"
+                value={formData.email}
                 onChange={handleChange}
                 required
                 placeholder="exemple@email.com ou +237 6XX XX XX XX"
@@ -190,9 +212,8 @@ export default function ContactSection() {
                 Message
               </label>
               <textarea
-                id="message"
-                name="message"
-                value={formData.message}
+                name="content"
+                value={formData.content}
                 onChange={handleChange}
                 required
                 rows={6}

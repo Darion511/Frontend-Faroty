@@ -31,6 +31,9 @@ export default function Footer() {
             <Link href="/contact">
               <li className="hover:text-white cursor-pointer">Contact</li>
             </Link>
+            <Link href="/login">
+              <li className="hover:text-white cursor-pointer">Gestion</li>
+            </Link>
           </ul>
         </div>
 

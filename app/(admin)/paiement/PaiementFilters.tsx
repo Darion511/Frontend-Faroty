@@ -1,13 +1,14 @@
 import { Search } from "lucide-react";
 import { StatutPaiement, MethodePaiement } from "./types";
+import { PaymentMethod, PaymentStatus } from "@/app/types/order";
 
 type Props = {
   search: string;
   setSearch: (value: string) => void;
-  selectedStatut: StatutPaiement | "Tous";
-  setSelectedStatut: (value: StatutPaiement | "Tous") => void;
-  selectedMethode: MethodePaiement | "Tous";
-  setSelectedMethode: (value: MethodePaiement | "Tous") => void;
+  selectedStatut: PaymentStatus | "Tous";
+  setSelectedStatut: (value: PaymentStatus | "Tous") => void;
+  selectedMethode: PaymentMethod | "Tous";
+  setSelectedMethode: (value: PaymentMethod | "Tous") => void;
 };
 
 export default function PaiementFilters({
@@ -18,21 +19,21 @@ export default function PaiementFilters({
   selectedMethode,
   setSelectedMethode,
 }: Props) {
-  const statuts: (StatutPaiement | "Tous")[] = [
+  const statuts: (PaymentStatus | "Tous")[] = [
     "Tous",
-    "En attente",
-    "Validé",
-    "Échoué",
-    "Remboursé",
+    "Paid" ,
+    "Pending" ,
+    "Failed",
   ];
 
-  const methodes: (MethodePaiement | "Tous")[] = [
+  const methodes: (PaymentMethod | "Tous")[] = [
     "Tous",
-    "Mobile Money",
-    "Orange Money",
-    "Carte bancaire",
-    "Espèces",
-    "paypal",
+    "CASH",
+    "MOBILE_MONEY",
+    "CARTE_BANCAIRE",
+    "PAYPAL",
+    "STRIPE",
+    "FAROTY",
   ];
 
   return (
@@ -54,7 +55,7 @@ export default function PaiementFilters({
         <select
           value={selectedStatut}
           onChange={(e) =>
-            setSelectedStatut(e.target.value as StatutPaiement | "Tous")
+            setSelectedStatut(e.target.value as PaymentStatus | "Tous")
           }
           className="px-4 py-3.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#8352a5] bg-white"
         >
@@ -69,7 +70,7 @@ export default function PaiementFilters({
         <select
           value={selectedMethode}
           onChange={(e) =>
-            setSelectedMethode(e.target.value as MethodePaiement | "Tous")
+            setSelectedMethode(e.target.value as PaymentMethod | "Tous")
           }
           className="px-4 py-3.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#8352a5] bg-white"
         >

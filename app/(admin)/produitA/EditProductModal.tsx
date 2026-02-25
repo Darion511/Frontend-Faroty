@@ -1,5 +1,6 @@
 "use client";
 
+import { uploadImage } from "@/app/services/uploadImageService";
 import { X, Save, Image as ImageIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Product } from "@/app/types/product";
@@ -24,11 +25,13 @@ export default function EditProductModal({
     price: product.price,
     marque: product.marque,
     quantity: product.quantity,
-    category: product.categoryId?.id || "",
+    category: product.category.id || "",
+    imageUrl: product.imageUrl || "",
   });
 
   const [categories, setCategories] = useState<Category[]>([]);
-  const [imageUrl, setImageUrl] = useState(product.imageUrl || "");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -80,18 +83,30 @@ export default function EditProductModal({
     setIsLoading(true);
 
     try {
-      const updatedProduct: Product = {
+      let uploadedImageUrl = "";
+      if (!imageFile) {
+        if (formData.imageUrl === "") {
+          setError("Image requise");
+          return;
+        }
+        uploadedImageUrl = formData.imageUrl;
+      } else {
+        uploadedImageUrl = await uploadImage(imageFile);
+      }
+
+      const updatedProduct = {
         ...product,
         name: formData.name,
         description: formData.description,
         price: formData.price,
         marque: formData.marque,
         quantity: formData.quantity,
-        categoryId: selectedCategory,
-        imageUrl,
+        imageUrl: uploadedImageUrl,
+        categoryId: selectedCategory.id,
       };
 
       await updateProduct(product.id, updatedProduct);
+
       onSuccess();
       onClose();
     } catch (err: any) {
@@ -154,24 +169,29 @@ export default function EditProductModal({
               </label>
 
               <input
-                type="url"
-                placeholder="https://example.com/image.jpg"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none mb-4"
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setImageFile(file);
+                    setImagePreview(URL.createObjectURL(file));
+                  }
+                }}
+                className="w-full px-4 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none"
               />
 
               <div className="w-32 h-32 rounded-xl overflow-hidden bg-gray-100 border-2 border-gray-200 flex items-center justify-center">
-                {imageUrl ? (
-                  <img
-                    src={imageUrl}
-                    alt="Aperçu"
-                    width={128}
-                    height={128}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <ImageIcon className="w-12 h-12 text-gray-400" />
+                {imagePreview && (
+                  <div className="relative w-full max-w-sm">
+                    <div className="relative w-full h-64 rounded-xl overflow-hidden border">
+                      <img
+                        src={imagePreview}
+                        alt="Aperçu du produit"
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
@@ -286,7 +306,7 @@ export default function EditProductModal({
               >
                 <option value="">Sélectionner une catégorie</option>
                 {categories.map((cat) => (
-                  <option key={cat.id} value={cat.name}>
+                  <option key={cat.id} value={cat.id}>
                     {cat.name}
                   </option>
                 ))}
@@ -304,10 +324,11 @@ export default function EditProductModal({
             >
               Annuler
             </button>
+
             <button
               type="submit"
               disabled={isLoading}
-              className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+              className="px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isLoading ? (
                 <>

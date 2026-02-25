@@ -15,7 +15,7 @@ interface FiltersProps {
 export default function Filters({ filters, onChange, products }: FiltersProps) {
   // 👇 Utilisation de products (passé en prop) au lieu de product
   const categories = Array.from(
-    new Set(products.map((p) => p.categoryId?.name ?? "Inconnu")),
+    new Set(products.map((p) => p.category?.name ?? "Inconnu")),
   );
   const brands = Array.from(new Set(products.map((p) => p.marque)));
 

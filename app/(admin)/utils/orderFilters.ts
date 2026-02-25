@@ -1,4 +1,4 @@
-import { Order } from "@/app/types/Order";
+import { Order } from "@/app/types/order";
 
 export type FilterType = "jour" | "semaine" | "mois";
 
@@ -12,7 +12,7 @@ export function filterOrdersByDate(
   const now = new Date();
 
   return orders.filter((cmd) => {
-    const cmdDate = new Date(cmd.date);
+    const cmdDate = new Date(cmd.createdAt);
 
     if (filter === "jour") {
       return (
@@ -50,7 +50,7 @@ export function searchOrders(orders: Order[], searchTerm: string): Order[] {
   const term = searchTerm.toLowerCase();
   return orders.filter(
     (cmd) =>
-      cmd.produit.toLowerCase().includes(term) ||
-      cmd.client.toLowerCase().includes(term),
+      cmd.orderItems.toString().toLowerCase().includes(term) ||
+      (cmd.firstName + cmd.lastName).toLowerCase().includes(term),
   );
 }

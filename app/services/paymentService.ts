@@ -1,9 +1,11 @@
-import { Payment } from "../types/Order";
+import { Payment } from "../types/order";
+import { getAuthHeaders } from "./headersHelpers";
 
-const API_URL = "http://localhost:8081/api/payment";
+const API_URL = "http://localhost:8081/api/payments";
 
 export async function getAllPayment(): Promise<Payment[]> {
   const response = await fetch(API_URL, {
+    headers: getAuthHeaders(),
     next: { revalidate: 60 }, // cache 60 secondes
   });
 
@@ -14,13 +16,11 @@ export async function getAllPayment(): Promise<Payment[]> {
   const json = await response.json();
   return json.data;
 }
-export async function createPayment(order: Payment): Promise<Payment> {
-  const response = await fetch(API_URL, {
+export async function createPayment(orderId: string): Promise<Payment> {
+  const response = await fetch(`${API_URL}/generate/${orderId}`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(order),
+    headers: getAuthHeaders(),
+    body: JSON.stringify(orderId),
   });
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
@@ -34,14 +34,12 @@ export async function createPayment(order: Payment): Promise<Payment> {
 }
 export async function modifyPaymentStatus(
   id: string,
-  order: Partial<Payment>,
+  status: string,
 ): Promise<Payment> {
-  const response = await fetch(`${API_URL}/${id}`, {
+  const response = await fetch(`${API_URL}/status/${id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(order),
+    headers: getAuthHeaders(),
+    body: JSON.stringify(status),
   });
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
@@ -55,6 +53,7 @@ export async function modifyPaymentStatus(
 export async function deletePayment(id: string): Promise<void> {
   const response = await fetch(`${API_URL}/${id}`, {
     method: "DELETE",
+    headers: getAuthHeaders(),
   });
   if (!response.ok) {
     throw new Error("Erreur lors de la suppression de la catégorie");

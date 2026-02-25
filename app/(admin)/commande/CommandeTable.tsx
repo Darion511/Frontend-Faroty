@@ -1,4 +1,4 @@
-import { Order } from "@/app/types/Order";
+import { Order } from "@/app/types/order";
 import CommandeRow from "./CommandeRow";
 
 type Props = {
@@ -27,9 +27,9 @@ export default function CommandeTable({
         <table className="w-full">
           <thead className="bg-gradient-to-r from-[#8352a5] to-[#6b3d8f]">
             <tr>
-              <th className="px-6 py-4 text-left text-sm font-bold text-white uppercase">
+              {/* <th className="px-6 py-4 text-left text-sm font-bold text-white uppercase">
                 N° Commande
-              </th>
+              </th> */}
               <th className="px-6 py-4 text-left text-sm font-bold text-white uppercase">
                 Client
               </th>

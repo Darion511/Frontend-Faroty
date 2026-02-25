@@ -77,20 +77,6 @@ export default function CategoriesTable({
             <span className="font-semibold">{categories.length}</span> sur{" "}
             <span className="font-semibold">{totalCategories}</span> catégories
           </div>
-          <div className="flex gap-2">
-            <button
-              className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled
-            >
-              Précédent
-            </button>
-            <button
-              className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled
-            >
-              Suivant
-            </button>
-          </div>
         </div>
       )}
     </div>

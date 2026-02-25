@@ -1,9 +1,9 @@
-import { Paiement } from "./types";
+import { Payment } from "@/app/types/order";
 import PaiementRow from "./PaiementRow";
 
 type Props = {
-  paiements: Paiement[];
-  onViewDetails: (paiement: Paiement) => void;
+  paiements: Payment[];
+  onViewDetails: (paiement: Payment) => void;
   onRefresh: () => void;
 };
 

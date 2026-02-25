@@ -26,21 +26,21 @@ export default function ProductTableRow({
 }: Props) {
   // Style du stock selon la quantité
   const getStockStyle = () => {
-    if (product.quantity === 0) {
+    if (product.quantity - product.pending === 0) {
       return {
         bg: "bg-red-50",
         text: "text-red-700",
         label: "Rupture",
       };
     }
-    if (product.quantity < 5) {
+    if (product.quantity - product.pending < 5) {
       return {
         bg: "bg-orange-50",
         text: "text-orange-700",
         label: "Stock faible",
       };
     }
-    if (product.quantity < 10) {
+    if (product.quantity - product.pending < 10) {
       return {
         bg: "bg-yellow-50",
         text: "text-yellow-700",
@@ -77,10 +77,10 @@ export default function ProductTableRow({
           <span className="font-semibold text-gray-900 line-clamp-2 block mb-1">
             {product.name}
           </span>
-          {product.categoryId && (
+          {product.category && (
             <span className="text-xs text-gray-500 inline-flex items-center gap-1">
               <span className="w-1.5 h-1.5 bg-[#8352a5] rounded-full"></span>
-              {product.categoryId.id}
+              {product.category.id}
             </span>
           )}
         </div>
@@ -102,7 +102,7 @@ export default function ProductTableRow({
             className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg font-semibold text-sm w-fit ${stockInfo.bg} ${stockInfo.text}`}
           >
             <Package className="w-4 h-4" />
-            {product.quantity}
+            {product.quantity - product.pending}
           </span>
           <span className={`text-xs ${stockInfo.text} font-medium`}>
             {stockInfo.label}

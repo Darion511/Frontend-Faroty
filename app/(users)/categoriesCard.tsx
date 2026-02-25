@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Category } from "@/app/types/product";
 
 export default function CategoriesCard({ category }: { category: Category }) {
+  const primaryImage = category.imageUrl;
   return (
     <div className="p-4 space-y-2">
       <Link href={`/produits?category=${encodeURIComponent(category.name)}`}>
@@ -19,10 +20,9 @@ export default function CategoriesCard({ category }: { category: Category }) {
         >
           {/* IMAGE */}
           <div className="relative h-52 overflow-hidden rounded-t-xl">
-            <Image
-              src=""
+            <img
+              src={primaryImage}
               alt="Encres & Toners"
-              fill
               className="object-cover group-hover:scale-110 transition duration-300"
             />
           </div>
@@ -32,9 +32,6 @@ export default function CategoriesCard({ category }: { category: Category }) {
             <h3 className="text-[#8352a5] font-semibold text-lg">
               {category.name}
             </h3>
-            <p className="text-stone-500 text-sm mt-2">
-              Cartouches pour toutes marques
-            </p>
           </div>
         </motion.div>
       </Link>

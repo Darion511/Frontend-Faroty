@@ -9,7 +9,7 @@ import {
   Package,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Order } from "@/app/types/Order";
+import { Order } from "@/app/types/order";
 import Link from "next/link";
 
 export default function OrdersPreview({
@@ -26,15 +26,6 @@ export default function OrdersPreview({
   // Fonction pour formater le statut
   const getStatusInfo = (status: string) => {
     switch (status) {
-      case "PAYE":
-        return {
-          label: "Payé",
-          bgColor: "bg-green-100",
-          textColor: "text-green-700",
-          iconBg: "bg-green-100",
-          iconColor: "text-green-600",
-          icon: CheckCircle,
-        };
       case "EN_ATTENTE":
         return {
           label: "En attente",
@@ -95,20 +86,20 @@ export default function OrdersPreview({
   };
 
   // Calculer le total du jour
-  const getTodayTotal = () => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+  // const getTodayTotal = () => {
+  //   const today = new Date();
+  //   today.setHours(0, 0, 0, 0);
 
-    return orders
-      .filter((order) => {
-        const orderDate = new Date(order.createdAt);
-        orderDate.setHours(0, 0, 0, 0);
-        return (
-          orderDate.getTime() === today.getTime() && order.status === "PAYE"
-        );
-      })
-      .reduce((sum, order) => sum + order.totalAmount, 0);
-  };
+  //   return orders
+  //     .filter((order) => {
+  //       const orderDate = new Date(order.createdAt);
+  //       orderDate.setHours(0, 0, 0, 0);
+  //       return (
+  //         orderDate.getTime() === today.getTime() && order.status === "PAYE"
+  //       );
+  //     })
+  //     .reduce((sum, order) => sum + order.totalAmount, 0);
+  // };
 
   // État de chargement
   if (loading) {

@@ -14,7 +14,7 @@ export type Order = {
   orderItems: OrderItem[];
   payment: Payment[];
 };
-export type OrderStatus = "EN_ATTENTE" | "PAYE" | "LIVRE" | "ANNULE";
+export type OrderStatus = "EN_ATTENTE" | "LIVRE" | "ANNULE";
 
 export type OrderItem = {
   id: string;
@@ -26,10 +26,23 @@ export type OrderItem = {
 };
 export type Payment = {
   id: string;
-  orderId: Order;
-  paymentMethod: string;
-  paymentStatus: string;
+  orderId: string;
+  paymentMethod: PaymentMethod;
+  paymentStatus: PaymentStatus;
   amount: number;
   createdAt: string;
   response: string;
+  paymentLink: string;
+  sessionToken: string;
+  farotyTransactionId: string;
 };
+
+export type PaymentMethod =
+  | "CASH"
+  | "MOMO"
+  | "OM"
+  | "CARD"
+  | "PAYPAL"
+  | "FAROTY";
+
+export type PaymentStatus = "Paid" | "Pending" | "Failed";

@@ -8,10 +8,7 @@ import Link from "next/link";
 
 export default function ProductCard({ product }: { product: Product }) {
   // ✅ Image principale
-  const primaryImage =
-    product.productImages?.find((img) => img.isPrimary)?.imageUrl ||
-    product.productImages?.[0]?.imageUrl ||
-    "/placeholder.png";
+  const primaryImage = product.imageUrl;
 
   return (
     <motion.div
@@ -23,7 +20,7 @@ export default function ProductCard({ product }: { product: Product }) {
     >
       <Link href={`/produits/${product.id}`}>
         <div className="h-44 bg-gray-50 flex items-center justify-center overflow-hidden">
-          <Image
+          <img
             src={primaryImage}
             alt={product.name}
             width={300}
@@ -35,13 +32,15 @@ export default function ProductCard({ product }: { product: Product }) {
 
       {/* CONTENU */}
       <div className="p-4 space-y-2">
-        <h3 className="font-semibold text-[#8352a5]">{product.name}</h3>
+        <h3 className="font-semibold text-[#8352a5] truncate">
+          {product.name}
+        </h3>
 
         {/* Catégorie au lieu de brand */}
-        <p className="text-sm text-gray-500">{product.marque}</p>
+        <p className="text-sm text-gray-500 truncate">{product.marque}</p>
 
         <div className="flex items-center justify-between pt-2">
-          <p className="text-lg font-bold text-gray-900">
+          <p className="text-lg font-bold text-gray-900 truncate">
             {product.price.toLocaleString()} FCFA
           </p>
         </div>

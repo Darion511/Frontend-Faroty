@@ -5,22 +5,24 @@ import Sidebar from "../homeA/navbarA";
 import Topbar from "../homeA/Topbar";
 import CommandeHeader from "./CommandeHeader";
 import CommandeStats from "./CommandeStats";
-import CommandeFilters from "./CommandeFilters";
+// import CommandeFilters from "./CommandeFilters";
 import CommandeTable from "./CommandeTable";
 import CommandeDetailsModal from "./CommandeDetailsModal";
-import { Order, OrderStatus } from "@/app/types/Order";
+import { Order } from "@/app/types/order";
 import { getAllOrders } from "@/app/services/orderService";
+import { FilterType } from "../utils/orderFilters";
+import { requireAuth } from "@/app/services/headersHelpers";
 // import { Commande, StatutCommande } from "./types";
 // import { fetchCommandes, calculateStats } from "../data/commandesData";
 
 export default function CommandePage() {
+  requireAuth();
+
   const [commandes, setCommandes] = useState<Order[]>([]); // 👈 Initialisation avec []
   const [filteredCommandes, setFilteredCommandes] = useState<Order[]>([]); // 👈 Initialisation avec []
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [selectedStatut, setSelectedStatut] = useState<OrderStatus | "Tous">(
-    "Tous",
-  );
+  const [selectedStatut, setSelectedStatut] = useState<FilterType>("jour");
   const [selectedCommande, setSelectedCommande] = useState<Order | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
@@ -61,9 +63,9 @@ export default function CommandePage() {
     }
 
     // Filtrer par statut
-    if (selectedStatut !== "Tous") {
-      result = result.filter((c) => c.status === selectedStatut);
-    }
+    // if (selectedStatut !== "Tous") {
+    //   result = result.filter((c) => c.status === selectedStatut);
+    // }
 
     setFilteredCommandes(result);
   }, [search, selectedStatut, commandes]);
@@ -101,8 +103,8 @@ export default function CommandePage() {
           {/* <CommandeFilters
             search={search}
             setSearch={setSearch}
-            selectedStatut={selectedStatut}
-            setSelectedStatut={setSelectedStatut}
+            filter={selectedStatut}
+            setFilter={setSelectedStatut}
           /> */}
 
           <CommandeTable

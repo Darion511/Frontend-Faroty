@@ -38,7 +38,7 @@ export default function ProductDetails() {
             const similar = allProducts
               .filter(
                 (p) =>
-                  p.categoryId.name === productData.categoryId.name &&
+                  p.category.name === productData.category.name &&
                   p.id !== productData.id,
               )
               .slice(0, 6);
@@ -99,7 +99,7 @@ export default function ProductDetails() {
           </p>
 
           <a
-            href="/shop"
+            href="/accueil"
             className="inline-block px-6 py-3 bg-gradient-to-r from-[#8352a5] to-[#6b3d8f] text-white rounded-lg hover:shadow-lg transition-all"
           >
             Retour à la boutique
@@ -116,10 +116,9 @@ export default function ProductDetails() {
         {/* IMAGE */}
         <div className="shadow rounded-lg p-6 flex justify-center items-center bg-gray-50">
           <div className="relative w-full h-[400px]">
-            <Image
+            <img
               src={product.imageUrl || "/placeholder-product.png"}
               alt={product.name}
-              fill
               className="object-contain"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
@@ -132,9 +131,9 @@ export default function ProductDetails() {
         {/* INFOS */}
         <div className="space-y-6">
           {/* Catégorie */}
-          {product.categoryId.name && (
+          {product.category.name && (
             <div className="inline-block px-3 py-1 bg-purple-100 text-purple-700 text-sm font-semibold rounded-full">
-              {product.categoryId.name}
+              {product.category.name}
             </div>
           )}
 
@@ -155,11 +154,13 @@ export default function ProductDetails() {
             <span className="text-sm text-gray-500">Disponibilité:</span>
             <span
               className={`text-sm font-semibold ${
-                product.quantity > 0 ? "text-green-600" : "text-red-600"
+                product.quantity - product.pending > 0
+                  ? "text-green-600"
+                  : "text-red-600"
               }`}
             >
-              {product.quantity > 0
-                ? `En stock (${product.quantity} disponible${product.quantity > 1 ? "s" : ""})`
+              {product.quantity - product.pending > 0
+                ? `En stock (${product.quantity - product.pending} disponible${product.quantity - product.pending > 1 ? "s" : ""})`
                 : "Rupture de stock"}
             </span>
           </div>
@@ -189,13 +190,13 @@ export default function ProductDetails() {
           </div>
 
           {/* Description courte */}
-          {product.description && (
-            <p className="text-gray-600 text-sm leading-relaxed">
-              {product.description.length > 150
-                ? `${product.description.substring(0, 150)}...`
-                : product.description}
-            </p>
-          )}
+          <p className="text-gray-600 text-sm leading-relaxed">
+            {product.description
+              ? product.description.length > 150
+                ? `${product.description.slice(0, 150)}...`
+                : product.description
+              : "Aucune description disponible pour ce produit."}
+          </p>
 
           {/* BOUTON PANIER */}
           <div className="pt-4">
@@ -297,20 +298,11 @@ export default function ProductDetails() {
         {/* CONTENU DES ONGLETS */}
         <div className="min-h-[200px]">
           {tab === "description" && (
-            <div className="prose max-w-none">
-              {product.description ? (
-                <div className="text-gray-700 leading-relaxed space-y-4">
-                  <p>{product.description}</p>
-                  <ul className="list-disc list-inside space-y-2 text-sm text-gray-600">
-                    <li>Produit de qualité supérieure</li>
-                    <li>Installation facile</li>
-                    <li>Garantie fabricant</li>
-                  </ul>
-                </div>
-              ) : (
-                <p className="text-gray-500 italic">
+            <div className="text-gray-700 leading-relaxed whitespace-pre-line">
+              {product.description || (
+                <span className="italic text-gray-500">
                   Aucune description disponible pour ce produit.
-                </p>
+                </span>
               )}
             </div>
           )}
@@ -326,11 +318,11 @@ export default function ProductDetails() {
                     </span>
                   </div>
                 )}
-                {product.categoryId && (
+                {product.category && (
                   <div className="flex justify-between p-3 bg-gray-50 rounded-lg">
                     <span className="text-gray-600 font-medium">Catégorie</span>
                     <span className="text-gray-900 font-semibold">
-                      {product.categoryId.name}
+                      {product.category.name}
                     </span>
                   </div>
                 )}

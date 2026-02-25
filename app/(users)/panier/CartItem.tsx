@@ -29,7 +29,7 @@ export default function CartItem({
     <>
       <div className="bg-white rounded-xl shadow p-4 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5 hover:shadow-md transition">
         {/* IMAGE */}
-        <Image
+        <img
           src={item.product.imageUrl}
           alt={item.product.name}
           width={72}

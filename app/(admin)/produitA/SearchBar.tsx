@@ -22,7 +22,7 @@ export default function SearchBar({ search, setSearch }: Props) {
             className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#8352a5] focus:border-transparent transition-all"
           />
         </div>
-        <button className="px-6 py-3.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-medium flex items-center gap-2 whitespace-nowrap">
+        {/* <button className="px-6 py-3.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-medium flex items-center gap-2 whitespace-nowrap">
           <svg
             className="w-5 h-5"
             fill="none"
@@ -37,7 +37,7 @@ export default function SearchBar({ search, setSearch }: Props) {
             />
           </svg>
           Filtres
-        </button>
+        </button> */}
       </div>
     </div>
   );

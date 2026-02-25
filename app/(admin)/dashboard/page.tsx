@@ -14,26 +14,30 @@ import OrdersStatusChart from "./OrdersStatusChart";
 import { useEffect, useState } from "react";
 import { Product } from "@/app/types/product";
 import { getAllProducts } from "@/app/services/productService";
-import { Order } from "@/app/types/Order";
+import { Order } from "@/app/types/order";
 import { getAllOrders } from "@/app/services/orderService";
 import { statistics } from "@/app/types/statistics";
 import { getStatistics } from "@/app/services/statisticsService";
+import { requireAuth } from "@/app/services/headersHelpers";
 
 // ✅ Valeurs par défaut pour éviter les undefined
 const defaultStats: statistics = {
   byPeriod: [],
   summary: {
-    total: 0,
-    enAttente: 0,
-    enCours: 0,
-    livrees: 0,
-    annulees: 0,
+    totalOrders: 0,
+    deliveredOrders: 0,
+    pendingOrders: 0,
+    cancelledOrders: 0,
+    totalRevenue: 0,
   },
 };
 
 export default function DashboardPage() {
+  requireAuth();
+
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [fullOrders, setFullOrders] = useState<Order[]>([]);
   const [stats, setStats] = useState<statistics>(defaultStats); // ✅ Initialisé avec defaultStats
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [loadingOrders, setLoadingOrders] = useState(true);
@@ -75,7 +79,7 @@ export default function DashboardPage() {
               )
               .slice(0, 5)
           : [];
-
+        setFullOrders(Array.isArray(data) ? data : []);
         setOrders(recentOrders);
       } catch (err) {
         console.error("Erreur lors du chargement des commandes:", err);
@@ -150,9 +154,11 @@ export default function DashboardPage() {
           {/* STATISTICS */}
           <StatsSection
             totalProducts={products.length}
-            totalOrders={orders.length}
+            totalOrders={fullOrders.length}
             totalRevenue={stats.summary.totalRevenue}
-            lowStockProducts={products.filter((p) => p.quantity === 0).length}
+            lowStockProducts={
+              products.filter((p) => p.quantity - p.pending === 0).length
+            }
           />
 
           {/* CHARTS */}

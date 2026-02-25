@@ -62,7 +62,7 @@ export default function Produits() {
 
     const matchCategory =
       filters.categories.length === 0 ||
-      filters.categories.includes(product.categoryId?.name ?? "Inconnu");
+      filters.categories.includes(product.category?.name ?? "Inconnu");
 
     const matchBrand =
       filters.brands.length === 0 || filters.brands.includes(product.marque);

@@ -60,9 +60,9 @@ export default function Header() {
         {/* DROITE */}
         <div className="flex items-center gap-4">
           {/* Langue */}
-          <div className="hidden sm:block">
+          {/* <div className="hidden sm:block">
             <LangSelect />
-          </div>
+          </div> */}
 
           {/* NAV DESKTOP */}
           <nav
@@ -73,7 +73,11 @@ export default function Header() {
               { href: "/produits", label: "Produits" },
               { href: "/contact", label: "Contact" },
             ].map((item) => (
-              <Link key={item.href} href={item.href} className="group flex flex-col items-center">
+              <Link
+                key={item.href}
+                href={item.href}
+                className="group flex flex-col items-center"
+              >
                 <span className="transition-colors group-hover:opacity-80">
                   {item.label}
                 </span>

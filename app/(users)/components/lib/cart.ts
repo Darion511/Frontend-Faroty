@@ -1,6 +1,7 @@
 // lib/cart.ts
 
 import { Product } from "@/app/types/product";
+import { toast } from "sonner";
 
 const CART_KEY = "cart";
 
@@ -67,9 +68,27 @@ export function addToCart(product: Product) {
   const item = cart.find((i) => i.product.id === product.id);
 
   if (item) {
-    item.quantity += 1;
+    if (item.quantity < item.product.quantity - item.product.pending) {
+      item.quantity += 1;
+      toast.success("Produit ajouté au panier ", {
+        description: product.name,
+      });
+    } else {
+      toast.error("Stock épuisé ", {
+        description: product.name,
+      });
+    }
   } else {
-    cart.push({ product, quantity: 1 });
+    if (product.quantity - product.pending > 0) {
+      cart.push({ product, quantity: 1 });
+      toast.success("Produit ajouté au panier ", {
+        description: product.name,
+      });
+    } else {
+      toast.error("Stock épuisé ", {
+        description: product.name,
+      });
+    }
   }
 
   saveCart(cart);
@@ -98,7 +117,8 @@ export function getTotal() {
 }
 export function increaseQty(id: string) {
   const cart = getCart().map((item) =>
-    item.product.id === id && item.quantity < item.product.quantity
+    item.product.id === id &&
+    item.quantity < item.product.quantity - item.product.pending
       ? { ...item, quantity: item.quantity + 1 }
       : item,
   );

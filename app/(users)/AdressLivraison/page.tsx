@@ -9,7 +9,7 @@ import SelectQuartier from "../components/ui/SelectQuartier";
 import DeliveryOption from "../components/ui/Option";
 import { getTotal, getCart } from "../components/lib/cart";
 import { createOrder } from "@/app/services/orderService";
-import { Order, OrderItem } from "@/app/types/Order";
+import { Order, OrderItem } from "@/app/types/order";
 
 type DeliveryType = "home" | "store";
 
@@ -151,7 +151,7 @@ export default function AdresseLivraison() {
       const totalAmount = subtotal + deliveryFee;
 
       // Créer l'objet Order selon le type défini
-      const order: Order = {
+      const order: Partial<Order> = {
         id: "", // Sera généré par le backend
         userId: userId,
         totalAmount: totalAmount,
@@ -178,8 +178,8 @@ export default function AdresseLivraison() {
       const orderData = {
         id: createdOrder.id,
         orderNumber: createdOrder.id,
-        firstName: form.prenom,
-        lastName: form.nom,
+        firstName: form.nom,
+        lastName: form.prenom,
         phone: form.phone,
         email: form.email,
         ville: form.ville,
@@ -217,7 +217,7 @@ export default function AdresseLivraison() {
 
       // Redirection après 2 secondes
       setTimeout(() => {
-        router.push("/message");
+        router.push(`/message?orderId=${encodeURIComponent(createdOrder.id)}`);
       }, 2000);
     } catch (error: any) {
       console.error("Erreur lors de la création de la commande:", error);

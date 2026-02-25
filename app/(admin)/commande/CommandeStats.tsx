@@ -1,4 +1,4 @@
-import { Order } from "@/app/types/Order";
+import { Order } from "@/app/types/order";
 import { ShoppingBag, CheckCircle, Clock, TrendingUp } from "lucide-react";
 
 type Props = {
@@ -7,10 +7,10 @@ type Props = {
 
 export default function OrdersStats({ orders }: Props) {
   const totalOrders = orders?.length || 0;
-  const paidOrders = orders?.filter((o) => o.status === "PAYE").length || 0;
+
   const pendingOrders =
     orders?.filter((o) => o.status === "EN_ATTENTE").length || 0;
-  const totalQuantity = orders?.reduce((sum, o) => sum + o.quantite, 0) || 0;
+  // const totalQuantity = orders?.reduce((sum, o) => sum + o.quantity, 0) || 0;
 
   const stats = [
     {
@@ -23,15 +23,6 @@ export default function OrdersStats({ orders }: Props) {
       borderColor: "border-purple-100",
     },
     {
-      title: "Payées",
-      value: paidOrders,
-      icon: CheckCircle,
-      color: "green",
-      bgColor: "bg-green-100",
-      textColor: "text-green-600",
-      borderColor: "border-green-100",
-    },
-    {
       title: "En Attente",
       value: pendingOrders,
       icon: Clock,
@@ -40,19 +31,19 @@ export default function OrdersStats({ orders }: Props) {
       textColor: "text-orange-600",
       borderColor: "border-orange-100",
     },
-    {
-      title: "Articles Vendus",
-      value: totalQuantity,
-      icon: TrendingUp,
-      color: "blue",
-      bgColor: "bg-blue-100",
-      textColor: "text-blue-600",
-      borderColor: "border-blue-100",
-    },
+    // {
+    //   title: "Articles Vendus",
+    //   value: totalQuantity,
+    //   icon: TrendingUp,
+    //   color: "blue",
+    //   bgColor: "bg-blue-100",
+    //   textColor: "text-blue-600",
+    //   borderColor: "border-blue-100",
+    // },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
       {stats.map((stat, index) => (
         <div
           key={index}

@@ -14,44 +14,74 @@ import {
   CreditCard,
 } from "lucide-react";
 import { getCart } from "../../(users)/components/lib/cart";
-import { CartItem } from "@/app/types/cart";
-import { Order } from "@/app/types/Order";
-import { Payment } from "@/app/types/Order";
+import { Order, OrderItem } from "@/app/types/order";
+import { Payment } from "@/app/types/order";
 
-// interface OrderData {
-//   nom: string;
-//   prenom: string;
-//   phone: string;
-//   email: string;
-//   ville: string;
-//   quartier: string;
-//   deliveryType: "home" | "store";
-//   deliveryFee: number;
-//   subtotal: number;
-//   total: number;
-//   orderNumber: string;
-//   orderDate: string;
-//   deliveryAddress: string;
-// }
+import { createPayment } from "@/app/services/paymentService";
+import { getOrderById } from "@/app/services/orderService";
 
-export default function PaymentSummary() {
+export default function PaymentSummary({
+  orderId,
+}: {
+  orderId: string | null;
+}) {
   const [orderData, setOrder] = useState<Order | null>(null);
-  const [cart, setCart] = useState<CartItem[]>([]);
   const [deliveryFee, setDeliveryFee] = useState<number>(0);
-  const [paymentData, createPayment] = useState<Payment | null>(null);
-  useEffect(() => {
-    // Charger les données de commande depuis localStorage
-    const orders = async () => {
-      const savedOrderData = localStorage.getItem("orderData");
-      if (savedOrderData) {
-        setOrder(JSON.parse(savedOrderData));
-      }
+  const [paymentData, setPaymentData] = useState<Payment | null>(null);
+  const [isPaying, setIsPaying] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [paymentError, setPaymentError] = useState("");
 
-      // Charger le panier
-      setCart(getCart());
+  const handlePayment = async () => {
+    if (!orderData) return;
+
+    setIsPaying(true);
+    setPaymentError("");
+
+    try {
+      const orderPayload: string = orderData.id;
+
+      const payment = await createPayment(orderPayload);
+
+      setPaymentData(payment);
+
+      // 🔥 REDIRECTION VERS LE LIEN DE PAIEMENT
+      if (payment.paymentLink) {
+        window.location.href = payment.paymentLink;
+      } else {
+        throw new Error("Lien de paiement introuvable");
+      }
+    } catch (err) {
+      setPaymentError(
+        err instanceof Error ? err.message : "Erreur lors du paiement",
+      );
+    } finally {
+      setIsPaying(false);
+    }
+  };
+
+  useEffect(() => {
+    const loadOrderData = async () => {
+      if (!orderId) return;
+
+      try {
+        setLoading(true);
+
+        // Charger le produit
+        const orderData = await getOrderById(orderId);
+        if (orderData && !Array.isArray(orderData)) {
+          setOrder(orderData);
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement:", error);
+        setOrder(null);
+      } finally {
+        setLoading(false);
+      }
     };
-    orders();
-  }, []);
+
+    loadOrderData();
+  }, [orderId]);
 
   if (!orderData) {
     return (
@@ -181,7 +211,7 @@ export default function PaymentSummary() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {cart.map((item: CartItem, index) => (
+                  {orderData.orderItems.map((item: OrderItem, index) => (
                     <tr
                       key={index}
                       className="hover:bg-purple-50/30 transition-colors"
@@ -198,7 +228,7 @@ export default function PaymentSummary() {
                             />
                           </div> */}
                           <span className="font-medium text-gray-800 text-sm">
-                            {item.product.name}
+                            {item.productName}
                           </span>
                         </div>
                       </td>
@@ -206,11 +236,10 @@ export default function PaymentSummary() {
                         {item.quantity}
                       </td>
                       <td className="px-5 py-4 text-right text-sm text-gray-700">
-                        {item.product.price.toLocaleString()} FCFA
+                        {item.price.toLocaleString()} FCFA
                       </td>
                       <td className="px-5 py-4 text-right text-sm font-semibold text-[#8352a5]">
-                        {(item.quantity * item.product.price).toLocaleString()}{" "}
-                        FCFA
+                        {(item.quantity * item.price).toLocaleString()} FCFA
                       </td>
                     </tr>
                   ))}
@@ -306,9 +335,27 @@ export default function PaymentSummary() {
 
           {/* ===== BOUTON PAIEMENT ===== */}
           <div className="pt-4 space-y-4">
-            <button className="w-full bg-gradient-to-r from-[#8352a5] to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white py-4 rounded-xl text-lg font-bold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
-              <CreditCard className="w-6 h-6" />
-              Payer {orderData.totalAmount.toLocaleString()} FCFA
+            {paymentError && (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700">
+                {paymentError}
+              </div>
+            )}
+            <button
+              onClick={handlePayment}
+              disabled={isPaying}
+              className="w-full bg-gradient-to-r from-[#8352a5] to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white py-4 rounded-xl text-lg font-bold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2 disabled:opacity-70"
+            >
+              {isPaying ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Paiement en cours...
+                </>
+              ) : (
+                <>
+                  <CreditCard className="w-6 h-6" />
+                  Payer {orderData.totalAmount.toLocaleString()} FCFA
+                </>
+              )}
             </button>
 
             <div className="bg-green-50 border border-green-200 rounded-xl p-4">

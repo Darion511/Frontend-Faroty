@@ -10,8 +10,11 @@ import PageHeader from "./PageHeader";
 import SearchBar from "./SearchBar";
 import { Product } from "@/app/types/product";
 import { getAllProducts } from "@/app/services/productService";
+import { requireAuth } from "@/app/services/headersHelpers";
 
 export default function ProductsPage() {
+  requireAuth();
+
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,7 +55,7 @@ export default function ProductsPage() {
     }
 
     if (selectedCategory !== "all") {
-      result = result.filter((p) => p.categoryId?.name === selectedCategory);
+      result = result.filter((p) => p.category?.name === selectedCategory);
     }
 
     setFilteredProducts(result); // ✅ Manquait dans l'ancienne version
@@ -97,13 +100,7 @@ export default function ProductsPage() {
         <main className="p-8 space-y-6">
           <PageHeader onAddClick={() => setShowAddModal(true)} />
 
-          <SearchBar
-            search={search}
-            setSearch={setSearch}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            products={products}
-          />
+          <SearchBar search={search} setSearch={setSearch} />
 
           <ProductsTable
             products={filteredProducts}

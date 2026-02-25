@@ -3,6 +3,7 @@
 import { X, Tag, CheckCircle } from "lucide-react";
 import { useState } from "react";
 import { createCategory } from "@/app/services/categoryService";
+import { uploadImage } from "@/app/services/uploadImageService";
 
 type Props = {
   onClose: () => void;
@@ -11,7 +12,9 @@ type Props = {
 
 export default function AddCategoryModal({ onClose, onSuccess }: Props) {
   const [nom, setNom] = useState("");
-  const [statut, setStatut] = useState<"actif" | "inactif">("actif");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
 
@@ -27,21 +30,33 @@ export default function AddCategoryModal({ onClose, onSuccess }: Props) {
       return;
     }
 
+    if (!imageFile) {
+      setError("L'image de la catégorie est requise");
+      setIsLoading(false);
+      return;
+    }
+
     try {
+      // 1️⃣ Upload image vers Cloudinary
+      const uploadedImageUrl = await uploadImage(imageFile);
+
+      // 2️⃣ Payload final
       const payload = {
         name: nom.trim(),
+        imageUrl: uploadedImageUrl,
       };
 
+      // 3️⃣ Création catégorie
       await createCategory(payload);
 
-      onSuccess(); // refresh liste / toast
-      onClose?.(); // si tu as un modal
+      onSuccess();
+      onClose();
     } catch (error: any) {
       console.error("Erreur:", error);
       setError(error.message || "Erreur lors de la création de la catégorie");
-    } finally {
-      setIsLoading(false);
     }
+
+    setIsLoading(false);
   };
 
   return (
@@ -72,6 +87,33 @@ export default function AddCategoryModal({ onClose, onSuccess }: Props) {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Image de la catégorie <span className="text-red-500">*</span>
+            </label>
+
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setImageFile(file);
+                  setImagePreview(URL.createObjectURL(file));
+                }
+              }}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none"
+            />
+          </div>
+          {imagePreview && (
+            <div className="relative w-full h-40 rounded-xl overflow-hidden border">
+              <img
+                src={imagePreview}
+                alt="Aperçu catégorie"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Nom de la catégorie <span className="text-red-500">*</span>

@@ -11,9 +11,12 @@ import AddCategoryModal from "./AddCategoryModal";
 import { Category } from "@/app/types/product";
 import { getAllCategories } from "@/app/services/categoryService";
 import { deleteCategory } from "@/app/services/categoryService";
+import { requireAuth } from "@/app/services/headersHelpers";
 // Données mock
 
 export default function CategoriesAdmin() {
+  requireAuth();
+
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);

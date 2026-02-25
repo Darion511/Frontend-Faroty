@@ -17,14 +17,6 @@ export default function PaiementHeader() {
           Suivez et gérez tous les paiements de vos commandes
         </p>
       </div>
-
-      <button
-        onClick={handleExport}
-        className="px-6 py-3 bg-gradient-to-r from-[#8352a5] to-[#6b3d8f] text-white rounded-xl hover:from-[#6b3d8f] hover:to-[#5a2c7a] transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-semibold flex items-center gap-2"
-      >
-        <Download className="w-5 h-5" />
-        Exporter
-      </button>
     </div>
   );
 }

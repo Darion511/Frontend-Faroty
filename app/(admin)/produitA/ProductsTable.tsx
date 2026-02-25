@@ -146,37 +146,15 @@ export default function ProductsTable({
       {products && products.length > 0 && (
         <div className="bg-gray-50 px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-200">
           <div className="text-sm text-gray-700">
-            Affichage de <span className="font-semibold">{startIndex}</span> à{" "}
-            <span className="font-semibold">{endIndex}</span> sur{" "}
-            <span className="font-semibold">{totalProducts}</span> produit
-            {totalProducts > 1 ? "s" : ""}
-          </div>
-
-          <div className="flex items-center gap-2">
-            {/* Bouton Précédent */}
-            <button
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-              className="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 hover:border-[#8352a5] hover:text-[#8352a5] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-300 disabled:hover:text-gray-700"
-              aria-label="Page précédente"
-            >
-              Précédent
-            </button>
-
             {/* Indicateur de page */}
-            <div className="px-4 py-2 bg-gradient-to-r from-[#8352a5] to-[#6b3d8f] text-white rounded-lg font-semibold">
+            <div className="px-4 py-2  text-black rounded-lg font-semibold">
               {currentPage} / {totalPages}
+              Affichage de <span className="font-semibold">
+                {startIndex}
+              </span> à <span className="font-semibold">{endIndex}</span> sur{" "}
+              <span className="font-semibold">{totalProducts}</span> produit
+              {totalProducts > 1 ? "s" : ""}
             </div>
-
-            {/* Bouton Suivant */}
-            <button
-              onClick={handleNextPage}
-              disabled={currentPage >= totalPages}
-              className="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 hover:border-[#8352a5] hover:text-[#8352a5] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-300 disabled:hover:text-gray-700"
-              aria-label="Page suivante"
-            >
-              Suivant
-            </button>
           </div>
         </div>
       )}

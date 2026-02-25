@@ -8,7 +8,7 @@ import { Toaster } from "sonner";
 // const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "FarotyShop - Votre boutique en ligne",
+  title: "IFaShop - Votre boutique en ligne",
   description: "Achetez en ligne, payer comme vous voulez, livrés chez vous",
 };
 

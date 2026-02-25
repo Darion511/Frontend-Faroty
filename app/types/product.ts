@@ -7,22 +7,23 @@ export type Product = {
   quantity: number;
   marque: string;
   imageUrl: string;
-  categoryId: Category;
-  productImages: ProductImages;
+  pending: number;
+  category: Category;
   createdAt: string;
   updatedAt: string;
+};
+export type ProductRequest = {
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+  marque: string;
+  imageUrl: string;
+  categoryId: string;
 };
 
 export type Category = {
   id: string;
   name: string;
+  imageUrl: string;
 };
-
-export type ProductImages = [
-  {
-    id: string;
-    imageUrl: string;
-    isPrimary: boolean;
-    productId: string;
-  },
-];

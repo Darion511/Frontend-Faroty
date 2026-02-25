@@ -1,5 +1,5 @@
 import { Eye } from "lucide-react";
-import { Order } from "@/app/types/Order";
+import { Order } from "@/app/types/order";
 
 type Props = {
   commande: Order;
@@ -11,8 +11,6 @@ export default function CommandeRow({ commande, onViewDetails }: Props) {
     switch (commande.status) {
       case "EN_ATTENTE":
         return "bg-green-100 text-green-700";
-      case "PAYE":
-        return "bg-indigo-100 text-indigo-700";
       case "LIVRE":
         return "bg-blue-100 text-blue-700";
       case "ANNULE":
@@ -24,8 +22,6 @@ export default function CommandeRow({ commande, onViewDetails }: Props) {
     switch (commande.status) {
       case "EN_ATTENTE":
         return "bg-green-100 text-green-700";
-      case "PAYE":
-        return "bg-indigo-100 text-indigo-700";
       case "LIVRE":
         return "bg-blue-100 text-blue-700";
       case "ANNULE":
@@ -35,9 +31,9 @@ export default function CommandeRow({ commande, onViewDetails }: Props) {
 
   return (
     <tr className="hover:bg-purple-50 transition-all">
-      <td className="px-6 py-4">
+      {/* <td className="px-6 py-4">
         <span className="font-semibold text-[#8352a5]">{commande.id}</span>
-      </td>
+      </td> */}
       <td className="px-6 py-4">
         <div>
           <p className="font-semibold text-gray-900">{commande.firstName}</p>

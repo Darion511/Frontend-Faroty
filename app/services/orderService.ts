@@ -1,4 +1,4 @@
-import { Order } from "../types/Order";
+import { Order } from "../types/order";
 import { getAuthHeaders } from "./headersHelpers";
 
 const API_URL = "http://localhost:8081/api/orders";
@@ -16,12 +16,22 @@ export async function getAllOrders(): Promise<Order[]> {
   return json.data;
 }
 
-export async function createOrder(order: Order): Promise<Order> {
+export async function getOrderById(id: string | undefined): Promise<Order> {
+  const response = await fetch(`${API_URL}/id/${id}`);
+
+  if (!response.ok) {
+    throw new Error("Erreur lors du filtrage");
+  }
+
+  const json = await response.json();
+  return json.data;
+}
+
+export async function createOrder(order: Partial<Order>): Promise<Order> {
   const response = await fetch(API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
     body: JSON.stringify(order),
   });
@@ -38,15 +48,15 @@ export async function createOrder(order: Order): Promise<Order> {
 
 export async function modifyOrderStatus(
   id: string,
-  order: Partial<Order>,
+  status: "EN_ATTENTE" | "LIVRE" | "ANNULE",
 ): Promise<Order> {
-  const response = await fetch(`${API_URL}/${id}`, {
+  const response = await fetch(`${API_URL}/status/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
-    body: JSON.stringify(order),
+    body: JSON.stringify(status),
   });
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));

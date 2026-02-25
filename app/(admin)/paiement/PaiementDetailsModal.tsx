@@ -9,10 +9,12 @@ import {
   Download,
 } from "lucide-react";
 import { useState } from "react";
-import { Paiement, StatutPaiement } from "./types";
+
+import { modifyPaymentStatus } from "@/app/services/paymentService";
+import { Payment, PaymentStatus } from "@/app/types/order";
 
 type Props = {
-  paiement: Paiement;
+  paiement: Payment;
   onClose: () => void;
   onStatusChange: () => void;
 };
@@ -23,14 +25,14 @@ export default function PaiementDetailsModal({
   onStatusChange,
 }: Props) {
   const [isUpdating, setIsUpdating] = useState(false);
-  const [currentStatut, setCurrentStatut] = useState(paiement.statut);
+  const [currentStatut, setCurrentStatut] = useState(paiement.paymentStatus);
 
-  const handleStatusChange = async (newStatut: StatutPaiement) => {
+  const handleStatusChange = async (newStatut: PaymentStatus) => {
     if (!confirm(`Changer le statut vers "${newStatut}" ?`)) return;
 
     setIsUpdating(true);
     try {
-      await updatePaiementStatus(paiement.id, newStatut);
+      await modifyPaymentStatus(paiement.id, newStatut);
       setCurrentStatut(newStatut);
       onStatusChange();
       alert("Statut mis à jour avec succès !");
@@ -62,9 +64,7 @@ export default function PaiementDetailsModal({
               <h2 className="text-2xl font-bold text-white">
                 Détails du Paiement
               </h2>
-              <p className="text-purple-100 text-sm">
-                {paiement.numeroTransaction}
-              </p>
+              <p className="text-purple-100 text-sm">{paiement.id}</p>
             </div>
             <button
               onClick={onClose}
@@ -87,27 +87,27 @@ export default function PaiementDetailsModal({
                 <div>
                   <p className="text-sm text-gray-600">Montant</p>
                   <p className="text-2xl font-bold text-[#8352a5]">
-                    {paiement.montant.toLocaleString()} FCFA
+                    {paiement.amount.toLocaleString()} FCFA
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Méthode</p>
                   <p className="font-semibold text-gray-900">
-                    {paiement.methode}
+                    {paiement.paymentMethod}
                   </p>
                 </div>
-                {paiement.reference && (
+                {/* {paiement.reference && (
                   <div>
                     <p className="text-sm text-gray-600">Référence</p>
                     <p className="font-mono text-sm text-gray-900">
                       {paiement.reference}
                     </p>
                   </div>
-                )}
+                )} */}
                 <div>
                   <p className="text-sm text-gray-600">Date</p>
                   <p className="font-semibold text-gray-900">
-                    {new Date(paiement.date).toLocaleString("fr-FR")}
+                    {new Date(paiement.createdAt).toLocaleString("fr-FR")}
                   </p>
                 </div>
               </div>
@@ -118,7 +118,7 @@ export default function PaiementDetailsModal({
                 Informations client
               </h3>
               <div className="space-y-3 bg-gray-50 p-4 rounded-xl">
-                <div>
+                {/* <div>
                   <p className="text-sm text-gray-600">Nom</p>
                   <p className="font-semibold text-gray-900">
                     {paiement.client.nom}
@@ -135,11 +135,11 @@ export default function PaiementDetailsModal({
                   <p className="text-sm text-gray-900">
                     {paiement.client.telephone}
                   </p>
-                </div>
+                </div> */}
                 <div>
                   <p className="text-sm text-gray-600">Commande</p>
                   <p className="font-semibold text-[#8352a5]">
-                    {paiement.commande.numero}
+                    {paiement.orderId}
                   </p>
                 </div>
               </div>
@@ -152,7 +152,7 @@ export default function PaiementDetailsModal({
               Statut actuel
             </h3>
             <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-              {currentStatut === "Validé" && (
+              {currentStatut === "Paid" && (
                 <>
                   <CheckCircle className="w-6 h-6 text-green-600" />
                   <span className="text-lg font-semibold text-green-700">
@@ -160,7 +160,7 @@ export default function PaiementDetailsModal({
                   </span>
                 </>
               )}
-              {currentStatut === "En attente" && (
+              {currentStatut === "Pending" && (
                 <>
                   <Clock className="w-6 h-6 text-orange-600" />
                   <span className="text-lg font-semibold text-orange-700">
@@ -168,7 +168,7 @@ export default function PaiementDetailsModal({
                   </span>
                 </>
               )}
-              {currentStatut === "Échoué" && (
+              {currentStatut === "Failed" && (
                 <>
                   <XCircle className="w-6 h-6 text-red-600" />
                   <span className="text-lg font-semibold text-red-700">
@@ -176,19 +176,11 @@ export default function PaiementDetailsModal({
                   </span>
                 </>
               )}
-              {currentStatut === "Remboursé" && (
-                <>
-                  <RotateCcw className="w-6 h-6 text-blue-600" />
-                  <span className="text-lg font-semibold text-blue-700">
-                    Paiement Remboursé
-                  </span>
-                </>
-              )}
             </div>
           </div>
 
           {/* Notes */}
-          {paiement.notes && (
+          {/* {paiement.notes && (
             <div>
               <h3 className="text-sm font-semibold text-gray-500 uppercase mb-3">
                 Notes
@@ -197,7 +189,7 @@ export default function PaiementDetailsModal({
                 <p className="text-sm text-gray-700">{paiement.notes}</p>
               </div>
             </div>
-          )}
+          )} */}
 
           {/* Actions de changement de statut */}
           <div>
@@ -206,8 +198,8 @@ export default function PaiementDetailsModal({
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <button
-                onClick={() => handleStatusChange("Validé")}
-                disabled={isUpdating || currentStatut === "Validé"}
+                onClick={() => handleStatusChange("Paid")}
+                disabled={isUpdating || currentStatut === "Paid"}
                 className="p-4 border-2 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-green-50 hover:border-green-500"
               >
                 <CheckCircle className="w-6 h-6 text-green-600 mx-auto mb-2" />
@@ -215,8 +207,8 @@ export default function PaiementDetailsModal({
               </button>
 
               <button
-                onClick={() => handleStatusChange("En attente")}
-                disabled={isUpdating || currentStatut === "En attente"}
+                onClick={() => handleStatusChange("Pending")}
+                disabled={isUpdating || currentStatut === "Pending"}
                 className="p-4 border-2 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-orange-50 hover:border-orange-500"
               >
                 <Clock className="w-6 h-6 text-orange-600 mx-auto mb-2" />
@@ -224,21 +216,12 @@ export default function PaiementDetailsModal({
               </button>
 
               <button
-                onClick={() => handleStatusChange("Échoué")}
-                disabled={isUpdating || currentStatut === "Échoué"}
+                onClick={() => handleStatusChange("Failed")}
+                disabled={isUpdating || currentStatut === "Failed"}
                 className="p-4 border-2 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-50 hover:border-red-500"
               >
                 <XCircle className="w-6 h-6 text-red-600 mx-auto mb-2" />
                 <span className="text-sm font-semibold">Échoué</span>
-              </button>
-
-              <button
-                onClick={() => handleStatusChange("Remboursé")}
-                disabled={isUpdating || currentStatut === "Remboursé"}
-                className="p-4 border-2 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-50 hover:border-blue-500"
-              >
-                <RotateCcw className="w-6 h-6 text-blue-600 mx-auto mb-2" />
-                <span className="text-sm font-semibold">Rembourser</span>
               </button>
             </div>
           </div>

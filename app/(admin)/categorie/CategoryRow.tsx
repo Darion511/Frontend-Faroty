@@ -1,4 +1,4 @@
-import { Pencil, Eye, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { Category } from "@/app/types/product";
 
 type Props = {
@@ -12,8 +12,18 @@ export default function CategoryRow({ category, onDelete }: Props) {
       {/* Nom */}
       <td className="px-8 py-5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-[#8352a5] to-[#6b3d8f] rounded-lg flex items-center justify-center text-white font-bold">
-            {category.name.charAt(0)}
+          <div className="w-10 h-10 bg-gradient-to-br bg-gray-100 rounded-lg flex items-center justify-center text-white font-bold">
+            {category.imageUrl ? (
+              <img
+                src={category.imageUrl}
+                alt={category.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                N/A
+              </div>
+            )}
           </div>
           <span className="font-semibold text-gray-900">{category.name}</span>
         </div>

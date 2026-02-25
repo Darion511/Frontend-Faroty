@@ -4,24 +4,29 @@ import { useState, useEffect } from "react";
 import Sidebar from "../homeA/navbarA";
 import Topbar from "../homeA/Topbar";
 import PaiementHeader from "./PaiementHeader";
-import PaiementStats from "./PaiementStats";
+// import PaiementStats from "./PaiementStats";
 import PaiementFilters from "./PaiementFilters";
 import PaiementTable from "./PaiementTable";
 import PaiementDetailsModal from "./PaiementDetailsModal";
-import { Paiement, StatutPaiement, MethodePaiement } from "./types";
+
+import { getAllPayment } from "@/app/services/paymentService";
+import { Payment, PaymentMethod, PaymentStatus } from "@/app/types/order";
+import { requireAuth } from "@/app/services/headersHelpers";
 
 export default function PaiementPage() {
-  const [paiements, setPaiements] = useState<Paiement[]>([]);
-  const [filteredPaiements, setFilteredPaiements] = useState<Paiement[]>([]);
+  requireAuth();
+
+  const [paiements, setPaiements] = useState<Payment[]>([]);
+  const [filteredPaiements, setFilteredPaiements] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [selectedStatut, setSelectedStatut] = useState<StatutPaiement | "Tous">(
+  const [selectedStatut, setSelectedStatut] = useState<PaymentStatus | "Tous">(
     "Tous",
   );
   const [selectedMethode, setSelectedMethode] = useState<
-    MethodePaiement | "Tous"
+    PaymentMethod | "Tous"
   >("Tous");
-  const [selectedPaiement, setSelectedPaiement] = useState<Paiement | null>(
+  const [selectedPaiement, setSelectedPaiement] = useState<Payment | null>(
     null,
   );
   const [showDetailsModal, setShowDetailsModal] = useState(false);
@@ -30,7 +35,7 @@ export default function PaiementPage() {
   const loadPaiements = async () => {
     try {
       setLoading(true);
-      const data = await fetchPaiements();
+      const data = await getAllPayment();
       setPaiements(data);
       setFilteredPaiements(data);
     } catch (error) {
@@ -52,28 +57,27 @@ export default function PaiementPage() {
     if (search) {
       result = result.filter(
         (p) =>
-          p.numeroTransaction.toLowerCase().includes(search.toLowerCase()) ||
-          p.client.nom.toLowerCase().includes(search.toLowerCase()) ||
-          p.commande.numero.toLowerCase().includes(search.toLowerCase()),
+          p.id.toLowerCase().includes(search.toLowerCase()) ||
+          p.orderId.toLowerCase().includes(search.toLowerCase()),
       );
     }
 
     // Filtrer par statut
     if (selectedStatut !== "Tous") {
-      result = result.filter((p) => p.statut === selectedStatut);
+      result = result.filter((p) => p.paymentStatus === selectedStatut);
     }
 
     // Filtrer par méthode
     if (selectedMethode !== "Tous") {
-      result = result.filter((p) => p.methode === selectedMethode);
+      result = result.filter((p) => p.paymentMethod === selectedMethode);
     }
 
     setFilteredPaiements(result);
   }, [search, selectedStatut, selectedMethode, paiements]);
 
-  const stats = calculateStats(paiements);
+  // const stats = calculateStats(paiements);
 
-  const handleViewDetails = (paiement: Paiement) => {
+  const handleViewDetails = (paiement: Payment) => {
     setSelectedPaiement(paiement);
     setShowDetailsModal(true);
   };
@@ -99,7 +103,7 @@ export default function PaiementPage() {
         <main className="p-8 space-y-6">
           <PaiementHeader />
 
-          <PaiementStats stats={stats} />
+          {/* <PaiementStats stats={stats} /> */}
 
           <PaiementFilters
             search={search}

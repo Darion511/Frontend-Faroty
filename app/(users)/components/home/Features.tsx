@@ -37,7 +37,7 @@ export default function Features() {
   const categories = useMemo(
     () =>
       Array.from(
-        new Set(products.map((p) => p.categoryId?.name ?? "Inconnu")),
+        new Set(products.map((p) => p.category?.name ?? "Inconnu")),
       ).filter(Boolean),
     [products],
   );
@@ -51,7 +51,7 @@ export default function Features() {
   const filteredProducts = useMemo(() => {
     return products.filter(
       (p) =>
-        (category ? p.categoryId?.name === category : true) &&
+        (category ? p.category?.name === category : true) &&
         (brand ? p.marque === brand : true),
     );
   }, [products, category, brand]);

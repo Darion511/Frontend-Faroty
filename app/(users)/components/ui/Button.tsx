@@ -15,10 +15,6 @@ export default function Button({ product }: { product: Product }) {
     addToCart(product);
     setCartAmount(getCartAmount());
     console.log(getAllProducts());
-
-    toast.success("Produit ajouté au panier ", {
-      description: product.name,
-    });
   };
 
   return (

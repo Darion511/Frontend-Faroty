@@ -1,18 +1,12 @@
 "use client";
 
-import {
-  X,
-  Package,
-  DollarSign,
-  Layers,
-  CheckCircle,
-  Upload,
-} from "lucide-react";
+import { uploadImage } from "@/app/services/uploadImageService";
+import { X, Package, DollarSign, Layers, CheckCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { createProduct } from "@/app/services/productService";
 import { getAllCategories } from "@/app/services/categoryService";
-import { Category, Product } from "@/app/types/product";
+import { Category } from "@/app/types/product";
 
 type Props = {
   onClose: () => void;
@@ -27,7 +21,8 @@ export default function AddProductModal({ onClose, onSuccess }: Props) {
   const [categoryId, setCategoryId] = useState<string>("");
   const [description, setDescription] = useState("");
 
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [categories, setCategories] = useState<Category[]>([]);
@@ -62,7 +57,7 @@ export default function AddProductModal({ onClose, onSuccess }: Props) {
       return;
     }
 
-    if (!imageUrl.trim()) {
+    if (!imageFile) {
       setError("L'image du produit est requise");
       return;
     }
@@ -85,6 +80,7 @@ export default function AddProductModal({ onClose, onSuccess }: Props) {
     setIsLoading(true);
 
     try {
+      const uploadedImageUrl = await uploadImage(imageFile);
       // Construire l'objet produit selon le type attendu par l'API
       const newProduct = {
         name: name.trim(),
@@ -92,11 +88,12 @@ export default function AddProductModal({ onClose, onSuccess }: Props) {
         price: Number(price),
         quantity: Number(stock),
         marque: brand,
-        imageUrl: imageUrl,
+        imageUrl: uploadedImageUrl,
+
         categoryId: categoryId,
       };
 
-      await createProduct(newProduct as any);
+      await createProduct(newProduct);
 
       onSuccess();
       onClose();
@@ -182,22 +179,27 @@ export default function AddProductModal({ onClose, onSuccess }: Props) {
               </label>
 
               <input
-                type="url"
-                placeholder="https://example.com/image.jpg"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setImageFile(file);
+                    setImagePreview(URL.createObjectURL(file));
+                  }
+                }}
                 className="w-full px-4 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none"
               />
             </div>
 
             {/* Aperçu */}
-            {imageUrl && (
+            {imagePreview && (
               <div className="relative w-full max-w-sm">
                 <div className="relative w-full h-64 rounded-xl overflow-hidden border">
                   <img
-                    src={imageUrl}
+                    src={imagePreview}
                     alt="Aperçu du produit"
-                    className="object-cover"
+                    className="object-cover w-full h-full"
                   />
                 </div>
               </div>

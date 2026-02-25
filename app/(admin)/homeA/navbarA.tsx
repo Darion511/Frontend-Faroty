@@ -48,9 +48,6 @@ export default function Sidebar() {
         <Link href="/paiement">
           <MenuItem icon={<CreditCard size={20} />} label="Paiements" />
         </Link>
-        <Link href="/livraison">
-          <MenuItem icon={<Truck size={20} />} label="Livraisons" />
-        </Link>
       </nav>
 
       {/* LOGOUT */}
