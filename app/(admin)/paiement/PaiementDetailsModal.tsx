@@ -230,14 +230,6 @@ export default function PaiementDetailsModal({
         {/* Footer */}
         <div className="border-t border-gray-200 bg-gray-50 px-6 py-4 flex justify-between items-center">
           <button
-            onClick={handleDownloadReceipt}
-            className="px-4 py-2 text-[#8352a5] hover:bg-purple-50 rounded-lg transition-all font-semibold flex items-center gap-2"
-          >
-            <Download className="w-5 h-5" />
-            Télécharger le reçu
-          </button>
-
-          <button
             onClick={onClose}
             className="px-6 py-3 bg-gray-200 hover:bg-gray-300 rounded-xl font-semibold transition-all"
           >

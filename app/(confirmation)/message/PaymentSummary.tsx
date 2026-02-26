@@ -13,11 +13,14 @@ import {
   User,
   CreditCard,
 } from "lucide-react";
-import { getCart } from "../../(users)/components/lib/cart";
-import { Order, OrderItem } from "@/app/types/order";
+
+import { Order, OrderItem, PaymentCash } from "@/app/types/order";
 import { Payment } from "@/app/types/order";
 
-import { createPayment } from "@/app/services/paymentService";
+import {
+  createCashPayment,
+  createPayment,
+} from "@/app/services/paymentService";
 import { getOrderById } from "@/app/services/orderService";
 
 export default function PaymentSummary({
@@ -32,7 +35,7 @@ export default function PaymentSummary({
   const [loading, setLoading] = useState(true);
   const [paymentError, setPaymentError] = useState("");
 
-  const handlePayment = async () => {
+  const handlePaymentLigne = async () => {
     if (!orderData) return;
 
     setIsPaying(true);
@@ -44,7 +47,6 @@ export default function PaymentSummary({
       const payment = await createPayment(orderPayload);
 
       setPaymentData(payment);
-
       // 🔥 REDIRECTION VERS LE LIEN DE PAIEMENT
       if (payment.paymentLink) {
         window.location.href = payment.paymentLink;
@@ -54,6 +56,33 @@ export default function PaymentSummary({
     } catch (err) {
       setPaymentError(
         err instanceof Error ? err.message : "Erreur lors du paiement",
+      );
+    } finally {
+      setIsPaying(false);
+    }
+  };
+  const handleCashPayment = async () => {
+    if (!orderData) return;
+
+    setIsPaying(true);
+    setPaymentError("");
+
+    try {
+      const payment: PaymentCash = {
+        orderId: orderData.id,
+        paymentMethod: "CASH",
+      };
+
+      const paymentResponse = await createCashPayment(payment);
+
+      setPaymentData(paymentResponse);
+
+      // ✅ Paiement cash = pas de redirection externe
+      // 👉 Redirection vers page succès / confirmation
+      window.location.href = `/cash-success`;
+    } catch (err) {
+      setPaymentError(
+        err instanceof Error ? err.message : "Erreur lors du paiement cash",
       );
     } finally {
       setIsPaying(false);
@@ -341,7 +370,7 @@ export default function PaymentSummary({
               </div>
             )}
             <button
-              onClick={handlePayment}
+              onClick={handlePaymentLigne}
               disabled={isPaying}
               className="w-full bg-gradient-to-r from-[#8352a5] to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white py-4 rounded-xl text-lg font-bold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2 disabled:opacity-70"
             >
@@ -353,11 +382,27 @@ export default function PaymentSummary({
               ) : (
                 <>
                   <CreditCard className="w-6 h-6" />
-                  Payer {orderData.totalAmount.toLocaleString()} FCFA
+                  Payer en ligne {orderData.totalAmount.toLocaleString()} FCFA
                 </>
               )}
             </button>
-
+            <button
+              onClick={handleCashPayment}
+              disabled={isPaying}
+              className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-green-600 hover:to-emerald-700 text-white py-4 rounded-xl text-lg font-bold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2 disabled:opacity-70"
+            >
+              {isPaying ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Paiement en cours...
+                </>
+              ) : (
+                <>
+                  <CreditCard className="w-6 h-6" />
+                  Payer en Cash {orderData.totalAmount.toLocaleString()} FCFA
+                </>
+              )}
+            </button>
             <div className="bg-green-50 border border-green-200 rounded-xl p-4">
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">

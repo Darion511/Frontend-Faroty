@@ -3,7 +3,6 @@
 import {
   X,
   Clock,
-  Package,
   Truck,
   CheckCircle,
   XCircle,
@@ -11,8 +10,6 @@ import {
   Phone,
   Mail,
   CreditCard,
-  Download,
-  Printer,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -50,16 +47,6 @@ export default function CommandeDetailsModal({
     } finally {
       setIsUpdating(false);
     }
-  };
-
-  const handlePrintInvoice = () => {
-    alert("Impression de la facture...");
-    // Logique d'impression
-  };
-
-  const handleDownloadInvoice = () => {
-    alert("Téléchargement de la facture...");
-    // Logique de téléchargement
   };
 
   return (

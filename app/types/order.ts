@@ -37,6 +37,11 @@ export type Payment = {
   farotyTransactionId: string;
 };
 
+export type PaymentCash = {
+  orderId: string;
+  paymentMethod: PaymentMethod;
+};
+
 export type PaymentMethod =
   | "CASH"
   | "MOMO"

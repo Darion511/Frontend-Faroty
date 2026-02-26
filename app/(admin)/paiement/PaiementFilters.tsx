@@ -21,18 +21,18 @@ export default function PaiementFilters({
 }: Props) {
   const statuts: (PaymentStatus | "Tous")[] = [
     "Tous",
-    "Paid" ,
-    "Pending" ,
+    "Paid",
+    "Pending",
     "Failed",
   ];
 
   const methodes: (PaymentMethod | "Tous")[] = [
     "Tous",
     "CASH",
-    "MOBILE_MONEY",
-    "CARTE_BANCAIRE",
+    "MOMO",
+    "OM",
+    "CARD",
     "PAYPAL",
-    "STRIPE",
     "FAROTY",
   ];
 

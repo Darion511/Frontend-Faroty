@@ -1,6 +1,11 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "./authService";
 
+export const BASE_IP = {
+  dev: "localhost:8081",
+  prod: "192.168.1.105:8081",
+};
+
 export const getToken = (): string | null => {
   if (typeof window !== "undefined") {
     return localStorage.getItem("token");
