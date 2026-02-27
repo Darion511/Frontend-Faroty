@@ -15,8 +15,6 @@ import { requireAuth } from "@/app/services/headersHelpers";
 // Données mock
 
 export default function CategoriesAdmin() {
-  requireAuth();
-
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -25,6 +23,7 @@ export default function CategoriesAdmin() {
 
   useEffect(() => {
     const fetchCategories = async () => {
+      requireAuth();
       try {
         setLoading(true);
         setError(null);

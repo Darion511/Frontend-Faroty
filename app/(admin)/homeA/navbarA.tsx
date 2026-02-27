@@ -5,7 +5,6 @@ import {
   Layers,
   ShoppingCart,
   CreditCard,
-  Truck,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,12 +35,13 @@ export default function Sidebar() {
             label="Tableau de bord"
           />
         </Link>
-        <Link href="/produitA">
-          <MenuItem icon={<Package size={20} />} label="Produits" />
-        </Link>
         <Link href="/categorie">
           <MenuItem icon={<Layers size={20} />} label="Catégories" />
         </Link>
+        <Link href="/produitA">
+          <MenuItem icon={<Package size={20} />} label="Produits" />
+        </Link>
+
         <Link href="/commande">
           <MenuItem icon={<ShoppingCart size={20} />} label="Commandes" />
         </Link>

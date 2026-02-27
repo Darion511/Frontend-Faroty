@@ -57,7 +57,7 @@ export default function CommandeTable({
             {commandes.length > 0 ? (
               commandes.map((commande) => (
                 <CommandeRow
-                  key={commande.id}
+                  key={commande.identifiant}
                   commande={commande}
                   onViewDetails={onViewDetails}
                 />

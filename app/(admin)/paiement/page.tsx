@@ -14,8 +14,6 @@ import { Payment, PaymentMethod, PaymentStatus } from "@/app/types/order";
 import { requireAuth } from "@/app/services/headersHelpers";
 
 export default function PaiementPage() {
-  requireAuth();
-
   const [paiements, setPaiements] = useState<Payment[]>([]);
   const [filteredPaiements, setFilteredPaiements] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,6 +31,7 @@ export default function PaiementPage() {
 
   // Charger les paiements
   const loadPaiements = async () => {
+    requireAuth();
     try {
       setLoading(true);
       const data = await getAllPayment();
@@ -55,10 +54,8 @@ export default function PaiementPage() {
 
     // Filtrer par recherche
     if (search) {
-      result = result.filter(
-        (p) =>
-          p.id.toLowerCase().includes(search.toLowerCase()) ||
-          p.orderId.toLowerCase().includes(search.toLowerCase()),
+      result = result.filter((p) =>
+        p.identifiant.toLowerCase().includes(search.toLowerCase()),
       );
     }
 

@@ -9,7 +9,7 @@ import ProductsPreview from "./ProductsPreview";
 import SalesChart from "./SalesChart";
 import StatsSection from "./StatsSection";
 import RevenueChart from "./RevenueChart";
-import OrdersStatusChart from "./OrdersStatusChart";
+// import OrdersStatusChart from "./OrdersStatusChart";
 
 import { useEffect, useState } from "react";
 import { Product } from "@/app/types/product";
@@ -33,8 +33,6 @@ const defaultStats: statistics = {
 };
 
 export default function DashboardPage() {
-  requireAuth();
-
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [fullOrders, setFullOrders] = useState<Order[]>([]);
@@ -47,6 +45,7 @@ export default function DashboardPage() {
   // Chargement des produits
   useEffect(() => {
     const loadProducts = async () => {
+      requireAuth();
       try {
         setLoadingProducts(true);
         const data = await getAllProducts();

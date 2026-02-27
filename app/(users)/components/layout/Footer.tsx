@@ -5,6 +5,7 @@ import {
   FaTwitter,
   FaPhoneAlt,
   FaEnvelope,
+  FaTiktok,
 } from "react-icons/fa";
 
 export default function Footer() {
@@ -52,25 +53,77 @@ export default function Footer() {
         <div>
           <h4 className="font-semibold mb-4">Contact</h4>
           <ul className="space-y-3 text-purple-200 text-sm">
-            <li className="flex items-center gap-2">
-              <FaPhoneAlt /> (+237) 6 79 91 00 21
+            {/* Téléphone */}
+            <li className="flex items-center gap-2 hover:text-white transition">
+              <FaPhoneAlt className="flex-shrink-0" />
+              <a
+                href="tel:+237679910021"
+                className="hover:underline"
+                aria-label="Appeler le support"
+              >
+                (+237) 6 79 91 00 21
+              </a>
             </li>
-            <li className="flex items-center gap-2">
-              <FaEnvelope /> support@faroty.com
+
+            {/* Email */}
+            <li className="flex items-center gap-2 hover:text-white transition">
+              <FaEnvelope className="flex-shrink-0" />
+              <a
+                href="mailto:support@faroty.com"
+                className="hover:underline"
+                aria-label="Envoyer un email au support"
+              >
+                support@faroty.com
+              </a>
             </li>
           </ul>
 
           {/* RÉSEAUX SOCIAUX */}
+
           <div className="flex gap-4 mt-5">
-            <span className="p-2 bg-[#8352a5] rounded-full hover:bg-white hover:text-purple-700 transition cursor-pointer">
+            {/* Facebook */}
+            <a
+              href="https://www.facebook.com/share/18BCoXYMsE/?mibextid=wwXIfr"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+              className="p-2 bg-[#8352a5] text-white rounded-full hover:bg-white hover:text-purple-700 transition cursor-pointer"
+            >
               <FaFacebookF />
-            </span>
-            <span className="p-2 bg-[#8352a5] rounded-full hover:bg-white hover:text-purple-700 transition cursor-pointer">
+            </a>
+
+            {/* Instagram */}
+            <a
+              href="https://www.instagram.com/farotyme?utm_source=qr&igsh=NmNmaHlmZWl2dWFu"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="p-2 bg-[#8352a5] text-white rounded-full hover:bg-white hover:text-purple-700 transition cursor-pointer"
+            >
               <FaInstagram />
-            </span>
-            <span className="p-2 bg-[#8352a5] rounded-full hover:bg-white hover:text-purple-700 transition cursor-pointer">
+            </a>
+
+            {/* Twitter / X */}
+            <a
+              href="https://x.com/farotyMe"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Twitter"
+              className="p-2 bg-[#8352a5] text-white rounded-full hover:bg-white hover:text-purple-700 transition cursor-pointer"
+            >
               <FaTwitter />
-            </span>
+            </a>
+
+            {/* TikTok */}
+            <a
+              href="https://www.tiktok.com/@farotyme"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="TikTok"
+              className="p-2 bg-[#8352a5] text-white rounded-full hover:bg-white hover:text-purple-700 transition cursor-pointer"
+            >
+              <FaTiktok />
+            </a>
           </div>
         </div>
       </div>

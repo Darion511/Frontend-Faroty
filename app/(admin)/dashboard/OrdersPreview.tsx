@@ -169,7 +169,6 @@ export default function OrdersPreview({
             return (
               <div
                 key={order.id}
-                onClick={() => router.push(`/admin/commandes/${order.id}`)}
                 className="flex items-center gap-4 p-4 rounded-xl hover:bg-blue-50 transition-all cursor-pointer border border-gray-100 group"
               >
                 {/* Status Icon */}

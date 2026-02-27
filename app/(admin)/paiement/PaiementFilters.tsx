@@ -1,5 +1,4 @@
 import { Search } from "lucide-react";
-import { StatutPaiement, MethodePaiement } from "./types";
 import { PaymentMethod, PaymentStatus } from "@/app/types/order";
 
 type Props = {

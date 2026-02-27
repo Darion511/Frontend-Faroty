@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Button from "../ui/Button";
 import { motion } from "framer-motion";
 import { Product } from "@/app/types/product";
@@ -19,13 +18,13 @@ export default function ProductCard({ product }: { product: Product }) {
       className="bg-white rounded-xl shadow hover:shadow-xl transition group cursor-pointer overflow-hidden"
     >
       <Link href={`/produits/${product.id}`}>
-        <div className="h-44 bg-gray-50 flex items-center justify-center overflow-hidden">
+        <div className="h-44 bg-white flex items-center justify-center overflow-hidden">
           <img
             src={primaryImage}
             alt={product.name}
             width={300}
             height={300}
-            className="object-cover w-full h-full group-hover:scale-110 transition duration-300"
+            className="object-contain w-full h-full group-hover:scale-110 transition duration-300"
           />
         </div>
       </Link>

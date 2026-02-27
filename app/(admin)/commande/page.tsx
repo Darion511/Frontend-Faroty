@@ -12,12 +12,11 @@ import { Order } from "@/app/types/order";
 import { getAllOrders } from "@/app/services/orderService";
 import { FilterType } from "../utils/orderFilters";
 import { requireAuth } from "@/app/services/headersHelpers";
+import SearchAndFilters from "./CommandeFilters";
 // import { Commande, StatutCommande } from "./types";
 // import { fetchCommandes, calculateStats } from "../data/commandesData";
 
 export default function CommandePage() {
-  requireAuth();
-
   const [commandes, setCommandes] = useState<Order[]>([]); // 👈 Initialisation avec []
   const [filteredCommandes, setFilteredCommandes] = useState<Order[]>([]); // 👈 Initialisation avec []
   const [loading, setLoading] = useState(true);
@@ -28,6 +27,7 @@ export default function CommandePage() {
 
   // Charger les commandes
   const loadCommandes = async () => {
+    requireAuth();
     try {
       setLoading(true);
       const data = await getAllOrders();
@@ -57,8 +57,7 @@ export default function CommandePage() {
         (c) =>
           c.phone.toLowerCase().includes(search.toLowerCase()) ||
           c.firstName.toLowerCase().includes(search.toLowerCase()) ||
-          c.lastName.toLowerCase().includes(search.toLowerCase()) ||
-          c.email.toLowerCase().includes(search.toLowerCase()),
+          c.lastName.toLowerCase().includes(search.toLowerCase()),
       );
     }
 
@@ -100,12 +99,12 @@ export default function CommandePage() {
 
           <CommandeStats orders={commandes} />
 
-          {/* <CommandeFilters
+          <SearchAndFilters
             search={search}
             setSearch={setSearch}
             filter={selectedStatut}
             setFilter={setSelectedStatut}
-          /> */}
+          />
 
           <CommandeTable
             commandes={filteredCommandes}

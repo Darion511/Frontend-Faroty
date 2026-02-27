@@ -1,7 +1,7 @@
 import { Order } from "../types/order";
 import { BASE_IP, getAuthHeaders } from "./headersHelpers";
 
-const API_URL = `http://${BASE_IP.prod}/api/orders`;
+const API_URL = `http://${BASE_IP.dev}/api/orders`;
 
 export async function getAllOrders(): Promise<Order[]> {
   const response = await fetch(API_URL, {

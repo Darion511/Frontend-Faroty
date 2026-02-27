@@ -11,6 +11,7 @@ export type Order = {
   firstName: string;
   lastName: string;
   email: string;
+  identifiant: string;
   orderItems: OrderItem[];
   payment: Payment[];
 };
@@ -35,6 +36,7 @@ export type Payment = {
   paymentLink: string;
   sessionToken: string;
   farotyTransactionId: string;
+  identifiant: string;
 };
 
 export type PaymentCash = {

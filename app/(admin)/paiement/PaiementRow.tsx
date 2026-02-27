@@ -66,10 +66,12 @@ export default function PaiementRow({ paiement, onViewDetails }: Props) {
   return (
     <tr className="hover:bg-purple-50 transition-all">
       <td className="px-6 py-4">
-        <span className="font-semibold text-[#8352a5]">{paiement.id}</span>
+        <span className="font-semibold text-[#8352a5]">
+          {paiement.identifiant}
+        </span>
       </td>
       <td className="px-6 py-4">
-        <span className="font-medium text-gray-900">{paiement.orderId}</span>
+        <span className="font-medium text-gray-900">{order?.identifiant}</span>
       </td>
       <td className="px-6 py-4">
         <div>

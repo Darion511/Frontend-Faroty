@@ -13,15 +13,15 @@ export default function SearchAndFilters({
   filter,
   setFilter,
 }: Props) {
-  const filterOptions: {
-    value: FilterType;
-    label: string;
-    icon: typeof Clock;
-  }[] = [
-    { value: "jour", label: "Aujourd'hui", icon: Clock },
-    { value: "semaine", label: "Cette semaine", icon: Calendar },
-    { value: "mois", label: "Ce mois", icon: CalendarDays },
-  ];
+  // const filterOptions: {
+  //   value: FilterType;
+  //   label: string;
+  //   icon: typeof Clock;
+  // }[] = [
+  //   { value: "jour", label: "Aujourd'hui", icon: Clock },
+  //   { value: "semaine", label: "Cette semaine", icon: Calendar },
+  //   { value: "mois", label: "Ce mois", icon: CalendarDays },
+  // ];
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
@@ -42,7 +42,7 @@ export default function SearchAndFilters({
         </div>
 
         {/* Filtres de période */}
-        <div className="flex gap-3">
+        {/* <div className="flex gap-3">
           {filterOptions.map(({ value, label, icon: Icon }) => (
             <button
               key={value}
@@ -57,7 +57,7 @@ export default function SearchAndFilters({
               {label}
             </button>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );

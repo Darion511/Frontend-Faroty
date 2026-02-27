@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from "react";
-import Image from "next/image";
+
 import Link from "next/link";
 import { Package, ArrowRight, AlertCircle } from "lucide-react";
 import { Product } from "@/app/types/product";

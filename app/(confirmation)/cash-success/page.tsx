@@ -17,13 +17,12 @@ export default function CashPaymentSuccessPage() {
           align-items: center;
           justify-content: center;
           padding: 1.5rem;
-          background: #f0faf5;
+          background: #f9f5fd;
           font-family: 'DM Sans', sans-serif;
           position: relative;
           overflow: hidden;
         }
 
-        /* Decorative blobs */
         .page::before {
           content: '';
           position: absolute;
@@ -32,7 +31,7 @@ export default function CashPaymentSuccessPage() {
           width: 400px;
           height: 400px;
           border-radius: 50%;
-          background: radial-gradient(circle, #a7f3d0 0%, transparent 70%);
+          background: radial-gradient(circle, #d8bfef 0%, transparent 70%);
           opacity: 0.5;
           animation: drift 8s ease-in-out infinite alternate;
         }
@@ -44,7 +43,7 @@ export default function CashPaymentSuccessPage() {
           width: 350px;
           height: 350px;
           border-radius: 50%;
-          background: radial-gradient(circle, #6ee7b7 0%, transparent 70%);
+          background: radial-gradient(circle, #c9a8e8 0%, transparent 70%);
           opacity: 0.35;
           animation: drift 10s ease-in-out infinite alternate-reverse;
         }
@@ -54,7 +53,6 @@ export default function CashPaymentSuccessPage() {
           to   { transform: translate(30px, 20px) scale(1.08); }
         }
 
-        /* Card */
         .card {
           position: relative;
           z-index: 1;
@@ -65,8 +63,8 @@ export default function CashPaymentSuccessPage() {
           padding: 2.5rem 2rem 2rem;
           box-shadow:
             0 4px 6px rgba(0,0,0,0.04),
-            0 20px 60px rgba(16,185,129,0.12),
-            0 0 0 1px rgba(16,185,129,0.08);
+            0 20px 60px rgba(131,82,165,0.14),
+            0 0 0 1px rgba(131,82,165,0.08);
           text-align: center;
           animation: slideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
@@ -76,7 +74,6 @@ export default function CashPaymentSuccessPage() {
           to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* Icon ring */
         .icon-wrap {
           display: flex;
           justify-content: center;
@@ -86,12 +83,12 @@ export default function CashPaymentSuccessPage() {
           width: 88px;
           height: 88px;
           border-radius: 50%;
-          background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+          background: linear-gradient(135deg, #ede0f7 0%, #d8bfef 100%);
           display: flex;
           align-items: center;
           justify-content: center;
           position: relative;
-          box-shadow: 0 0 0 12px rgba(167,243,208,0.25);
+          box-shadow: 0 0 0 12px rgba(131,82,165,0.1);
           animation: pop 0.6s 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
         }
         @keyframes pop {
@@ -99,17 +96,16 @@ export default function CashPaymentSuccessPage() {
           to   { transform: scale(1);   opacity: 1; }
         }
         .icon-ring svg {
-          color: #059669;
+          color: #8352a5;
           width: 44px;
           height: 44px;
         }
 
-        /* Headline */
         .headline {
           font-family: 'Playfair Display', serif;
           font-size: 2rem;
           font-weight: 700;
-          color: #064e3b;
+          color: #3b1a5a;
           line-height: 1.15;
           margin-bottom: 0.5rem;
           animation: fadeIn 0.5s 0.45s both;
@@ -127,10 +123,9 @@ export default function CashPaymentSuccessPage() {
           to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* Info box */
         .info-box {
-          background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-          border: 1px solid #bbf7d0;
+          background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+          border: 1px solid #ddb8f5;
           border-radius: 16px;
           padding: 1.1rem 1.25rem;
           margin-bottom: 1.75rem;
@@ -144,24 +139,22 @@ export default function CashPaymentSuccessPage() {
           align-items: center;
           gap: 0.75rem;
           font-size: 0.875rem;
-          color: #065f46;
+          color: #5b2d82;
           font-weight: 400;
         }
         .info-row svg {
           flex-shrink: 0;
-          color: #10b981;
+          color: #8352a5;
           width: 18px;
           height: 18px;
         }
 
-        /* Divider */
         .divider {
           height: 1px;
-          background: linear-gradient(to right, transparent, #d1fae5, transparent);
+          background: linear-gradient(to right, transparent, #ddb8f5, transparent);
           margin: 0 1rem;
         }
 
-        /* Actions */
         .actions {
           display: flex;
           flex-direction: column;
@@ -172,7 +165,7 @@ export default function CashPaymentSuccessPage() {
           display: block;
           width: 100%;
           padding: 0.875rem;
-          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          background: linear-gradient(135deg, #9b6fc0 0%, #8352a5 100%);
           color: #fff;
           border-radius: 14px;
           font-family: 'DM Sans', sans-serif;
@@ -180,11 +173,11 @@ export default function CashPaymentSuccessPage() {
           font-weight: 500;
           text-decoration: none;
           transition: transform 0.18s ease, box-shadow 0.18s ease;
-          box-shadow: 0 4px 18px rgba(16,185,129,0.35);
+          box-shadow: 0 4px 18px rgba(131,82,165,0.38);
         }
         .btn-primary:hover {
           transform: translateY(-2px);
-          box-shadow: 0 8px 28px rgba(16,185,129,0.45);
+          box-shadow: 0 8px 28px rgba(131,82,165,0.48);
         }
         .btn-primary:active { transform: translateY(0); }
 
@@ -199,15 +192,15 @@ export default function CashPaymentSuccessPage() {
           font-size: 0.975rem;
           font-weight: 400;
           text-decoration: none;
-          transition: background 0.18s ease, border-color 0.18s ease;
+          transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
           background: transparent;
         }
         .btn-ghost:hover {
-          background: #f9fafb;
-          border-color: #d1d5db;
+          background: #faf5ff;
+          border-color: #ddb8f5;
+          color: #8352a5;
         }
 
-        /* Footer */
         .footer-note {
           font-size: 0.75rem;
           color: #9ca3af;
@@ -216,7 +209,6 @@ export default function CashPaymentSuccessPage() {
           animation: fadeIn 0.5s 0.85s both;
         }
 
-        /* Subtle top accent line */
         .card-accent {
           position: absolute;
           top: 0; left: 50%;
@@ -224,7 +216,7 @@ export default function CashPaymentSuccessPage() {
           width: 60%;
           height: 3px;
           border-radius: 0 0 8px 8px;
-          background: linear-gradient(90deg, #6ee7b7, #10b981, #6ee7b7);
+          background: linear-gradient(90deg, #c9a8e8, #8352a5, #c9a8e8);
         }
       `}</style>
 
@@ -232,20 +224,17 @@ export default function CashPaymentSuccessPage() {
         <div className="card">
           <div className="card-accent" />
 
-          {/* Icon */}
           <div className="icon-wrap">
             <div className="icon-ring">
               <CheckCircle />
             </div>
           </div>
 
-          {/* Headline */}
           <h1 className="headline">Commande validée !</h1>
           <p className="subline">
             Vous paierez à la réception de votre commande.
           </p>
 
-          {/* Info */}
           <div className="info-box">
             <div className="info-row">
               <Truck />
@@ -258,7 +247,6 @@ export default function CashPaymentSuccessPage() {
             </div>
           </div>
 
-          {/* Actions */}
           <div className="actions">
             <Link href="/" className="btn-ghost">
               Retour à l'accueil

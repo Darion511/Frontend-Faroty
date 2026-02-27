@@ -7,11 +7,7 @@ type Props = {
   onRefresh: () => void;
 };
 
-export default function PaiementTable({
-  paiements,
-  onViewDetails,
-  onRefresh,
-}: Props) {
+export default function PaiementTable({ paiements, onViewDetails }: Props) {
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
       <div className="overflow-x-auto">
@@ -48,7 +44,7 @@ export default function PaiementTable({
             {paiements.length > 0 ? (
               paiements.map((paiement) => (
                 <PaiementRow
-                  key={paiement.id}
+                  key={paiement.identifiant}
                   paiement={paiement}
                   onViewDetails={onViewDetails}
                 />
